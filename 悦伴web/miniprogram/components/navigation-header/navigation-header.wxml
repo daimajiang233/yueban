@@ -1,0 +1,2 @@
+<!--components/navigation-header/navigation-header.wxml-->
+<text>我是自定义组件</text>

@@ -1,0 +1,8 @@
+<!--pages/index/index.wxml-->
+<navigator url="/pages/logo/index" open-type="navigate" class="button">跳转到登录页面</navigator>
+<view>
+<!-- header -->
+<navigation-header></navigation-header>
+<!-- button -->
+
+</view>
