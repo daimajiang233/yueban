@@ -1,0 +1,74 @@
+/* 微信小程序模型卡片组件 SCSS */
+/* 变量 */
+$primary-color: #000000; /* 文本颜色 */
+$border-color: #ff69b4; /* 粉色边框 */
+$border-radius: 20rpx; /* 圆角 */
+$card-height: 180rpx; /* 卡片高度 */
+$spacing-unit: 20rpx; /* 间距单位 */
+$shadow-color: rgba(0, 0, 0, 0.1); /* 阴影颜色 */
+
+/* 混入：通用卡片样式 */
+@mixin card-base {
+  background-color: #ffffff;
+  border-radius: $border-radius;
+  // box-shadow: 0 10rpx 15rpx $shadow-color; /* 阴影 */
+  box-shadow: 0 20rpx 15rpx $shadow-color, 0 -1rpx 1rpx $shadow-color; /* 上下阴影 */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: space-between; /* 左右布局 */
+  padding: 0 $spacing-unit; /* 内边距 */
+}
+
+/* 模型卡片容器 */
+.model-card {
+  @include card-base;
+  height: $card-height;
+  position: relative; /* 用于粉色边框定位 */
+  width: 90%; /* 占据大部分屏幕宽度 */
+  margin: 35rpx auto; /* 上下边距居中 */
+
+  /* 左侧粉色边框 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20rpx;
+    // bottom: 10rpx;
+    width: 8rpx;
+    background-color: $border-color;
+    border-radius: 4rpx;
+    height: 140rpx;
+  }
+}
+
+/* 文本容器 */
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 中文标题 */
+.title-zh {
+  color: $primary-color;
+  font-size: 32rpx;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+/* 英文标题 */
+.title-en {
+  color: $primary-color;
+  font-size: 24rpx;
+  line-height: 1.2;
+}
+
+/* 右侧图标 */
+.model-icon {
+  width: 60rpx;
+  height: 60rpx;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

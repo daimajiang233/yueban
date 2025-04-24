@@ -1,0 +1,8 @@
+<!--components/navigation-btnList/navigation-btnList.wxml-->
+<view class="model-card">
+  <view class="text-container">
+    <text class="title-zh">{{zhTitle}}</text>
+    <text class="title-en">{{enTitle}}</text>
+  </view>
+  <view class="model-icon" style="background-image: url('{{iconUrl}}');"></view>
+</view>

@@ -1,2 +1,7 @@
 <!--components/navigation-header/navigation-header.wxml-->
-<text>我是自定义组件</text>
+<view class="header-style bg-images">
+  <view class="bluth-btn">
+    {{btnValue}}
+  </view>
+
+</view>

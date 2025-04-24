@@ -1,8 +1,24 @@
 <!--pages/index/index.wxml-->
-<navigator url="/pages/logo/index" open-type="navigate" class="button">跳转到登录页面</navigator>
 <view>
-<!-- header -->
-<navigation-header></navigation-header>
-<!-- button -->
-
+  <!-- <navigator url="/pages/logo/index" open-type="navigate" class="button">跳转到登录页面</navigator> -->
+  <view>
+  <!-- banner模块 -->
+  <view>
+    <navigation-header></navigation-header>
+  </view>
+  <!-- button模块 -->
+  <view>
+    <text>功能展示</text>
+    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+  </view>
+  <view>
+    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+  </view>
+  <view>
+    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+  </view>
+  <view>
+    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+  </view>
+  </view>
 </view>

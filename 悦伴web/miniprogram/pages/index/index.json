@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-   "navigation-header": "/components/navigation-header/navigation-header"
+   "navigation-header": "/components/navigation-header/navigation-header",
+   "navigation-btnList": "/components/navigation-btnList/navigation-btnList"
   }
 }

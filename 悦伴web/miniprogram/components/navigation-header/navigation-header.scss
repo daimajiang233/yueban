@@ -1,1 +1,52 @@
-/* components/navigation-header/navigation-header.wxss */
+/* 微信小程序导航头部 SCSS */
+/* 变量 */
+$primary-color: #ffffff;
+$border-color: #ff0000;
+$border-radius: 40rpx;
+$button-width: 225rpx;
+$spacing-unit: 22rpx;
+$header-height: 340rpx;
+
+/* 按钮样式的混入 */
+@mixin button-base {
+  color: $primary-color;
+  text-align: center;
+  border-radius: $border-radius;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  line-height: 50rpx; /* 确保文本垂直居中 */
+  padding: 15rpx 30rpx; /* 改进点击区域 */
+  min-height: 80rpx; /* 一致的高度 */
+}
+
+/* 头部容器 */
+.header-style {
+  height: $header-height;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 将内容对齐到底部 */
+  align-items: left; /* 水平居中 */
+  padding-bottom: $spacing-unit; /* 一致的间距 */
+  position: relative; /* 用于背景层叠 */
+
+  /* 按钮样式 */
+  .bluth-btn {
+    @include button-base;
+    width: $button-width;
+    border: 1rpx solid $border-color;
+    margin:0 0 10rpx 30rpx; /* 微调按钮位置 *\
+    align-self: right; /* 在flex容器中居中 */
+  }
+}
+
+/* 背景图片容器 */
+.bg-images {
+  background-image: url("http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20155.png"); /* 本地图片路径 */
+  background-size: cover;
+  // background-position: center;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  z-index: -1; /* 放置在内容后面 */
+}

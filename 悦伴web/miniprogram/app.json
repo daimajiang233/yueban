@@ -3,7 +3,7 @@
     "pages/index/index",
     "pages/logs/logs",
     "pages/logo/index",
-    "components/navigation-header/navigation-header"
+    "components/navigation-btnList/navigation-btnList"
   ],
   "window": {
     "navigationBarTitleText": "悦伴",
