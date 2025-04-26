@@ -3,22 +3,29 @@
   <!-- <navigator url="/pages/logo/index" open-type="navigate" class="button">跳转到登录页面</navigator> -->
   <view>
   <!-- banner模块 -->
-  <view>
+  <view class="header-wrap">
     <navigation-header></navigation-header>
   </view>
   <!-- button模块 -->
-  <view>
+<view>
+  <view class="btnLIst-title">
     <text>功能展示</text>
-    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
     <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
-    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="摇一摇" enTitle="SHAKE IT" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
-    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="智能加温" enTitle="HEATING" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+  </view>
+  <view>
+    <navigation-btnList zhTitle="使用教程" enTitle="INSTRUTIONS" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+  </view>
+  <view>
+    <navigation-btnList zhTitle="分享" enTitle="SHARE" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   </view>
+</view>
 </view>

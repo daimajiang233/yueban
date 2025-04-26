@@ -2,8 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/logo/index",
-    "components/navigation-btnList/navigation-btnList"
+    "pages/logo/index"
   ],
   "window": {
     "navigationBarTitleText": "悦伴",
@@ -23,5 +22,10 @@
   },
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.bluetooth": {
+      "desc": "需要使用蓝牙功能以连接设备"
+    }
+  }
 }

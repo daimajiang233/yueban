@@ -4,3 +4,20 @@ page {
   display: flex;
   flex-direction: column;
 }
+.header-wrap{
+  display: flex;
+  justify-content: center;
+  border: 1px solid red;
+}
+.btnLIst-title{
+  display: flex;
+  justify-content: left; // 水平居左
+  align-items: flex-end; // 垂直居中
+  height: 100rpx; // 确保有足够高度以体现垂直居中效果
+  padding-left: 30rpx;
+  // border: 1px solid red;
+    text{
+      font-size: 35rpx;
+      font-weight: bold;
+    }
+}

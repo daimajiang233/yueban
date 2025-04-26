@@ -5,7 +5,8 @@ $border-color: #ff0000;
 $border-radius: 40rpx;
 $button-width: 225rpx;
 $spacing-unit: 22rpx;
-$header-height: 340rpx;
+$header-height: 320rpx;
+$header-width: 700rpx;
 
 /* 按钮样式的混入 */
 @mixin button-base {
@@ -22,6 +23,7 @@ $header-height: 340rpx;
 /* 头部容器 */
 .header-style {
   height: $header-height;
+  width: $header-width;
   display: flex;
   flex-direction: column;
   justify-content: flex-end; /* 将内容对齐到底部 */
@@ -43,10 +45,5 @@ $header-height: 340rpx;
 .bg-images {
   background-image: url("http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20155.png"); /* 本地图片路径 */
   background-size: cover;
-  // background-position: center;
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
-  z-index: -1; /* 放置在内容后面 */
+  // z-index: -1; /* 放置在内容后面 有bug会导致按钮无法点击*/
 }

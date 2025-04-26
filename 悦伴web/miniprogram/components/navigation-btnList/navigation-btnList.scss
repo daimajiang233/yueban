@@ -3,7 +3,7 @@
 $primary-color: #000000; /* 文本颜色 */
 $border-color: #ff69b4; /* 粉色边框 */
 $border-radius: 20rpx; /* 圆角 */
-$card-height: 180rpx; /* 卡片高度 */
+$card-height: 150rpx; /* 卡片高度 */
 $spacing-unit: 20rpx; /* 间距单位 */
 $shadow-color: rgba(0, 0, 0, 0.1); /* 阴影颜色 */
 
@@ -12,7 +12,7 @@ $shadow-color: rgba(0, 0, 0, 0.1); /* 阴影颜色 */
   background-color: #ffffff;
   border-radius: $border-radius;
   // box-shadow: 0 10rpx 15rpx $shadow-color; /* 阴影 */
-  box-shadow: 0 20rpx 15rpx $shadow-color, 0 -1rpx 1rpx $shadow-color; /* 上下阴影 */
+  box-shadow: 0 10rpx 15rpx $shadow-color, 0 -1rpx 1rpx $shadow-color; /* 上下阴影 */
   box-sizing: border-box;
   display: flex;
   align-items: center; /* 垂直居中 */
@@ -25,20 +25,19 @@ $shadow-color: rgba(0, 0, 0, 0.1); /* 阴影颜色 */
   @include card-base;
   height: $card-height;
   position: relative; /* 用于粉色边框定位 */
-  width: 90%; /* 占据大部分屏幕宽度 */
-  margin: 35rpx auto; /* 上下边距居中 */
-
+  width: 700rpx; /* 占据大部分屏幕宽度 */
+  margin: 20rpx auto; /* 上下边距居中 */
   /* 左侧粉色边框 */
   &::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 20rpx;
+    top: 25rpx;
     // bottom: 10rpx;
     width: 8rpx;
     background-color: $border-color;
     border-radius: 4rpx;
-    height: 140rpx;
+    height: 100rpx;
   }
 }
 
