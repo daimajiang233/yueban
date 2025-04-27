@@ -1,7 +1,7 @@
 <!--components/navigation-header/navigation-header.wxml-->
 <view class="header-style bg-images">
-  <view class="bluth-btn" bindtap="connectBluetooth">
-    {{isConnected ? '蓝牙已连接' : '蓝牙已断开'}}
+  <view class="bluth-btn" bindtap="toggleScan">
+    {{isScanning ? '接收中...' : '接收广播'}}
   </view>
 
 </view>
