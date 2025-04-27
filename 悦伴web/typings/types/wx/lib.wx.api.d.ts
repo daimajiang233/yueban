@@ -432,6 +432,7 @@ declare namespace WechatMiniprogram {
     }
     /** 设备服务列表 */
     interface BLEService {
+        serviceId: any
         /** 该服务是否为主服务 */
         isPrimary: boolean
         /** 蓝牙设备服务的 uuid */

@@ -1,6 +1,10 @@
 // app.ts
+/// <reference path="./utils/globalData.ts" />
+
 App<IAppOption>({
-  globalData: {},
+  globalData: {
+      
+  },
   onLaunch() {
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []
