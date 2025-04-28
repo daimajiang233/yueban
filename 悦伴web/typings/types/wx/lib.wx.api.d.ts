@@ -406,6 +406,7 @@ declare namespace WechatMiniprogram {
     }
     /** 该特征值支持的操作类型 */
     interface BLECharacteristicProperties {
+        writeNoResponse: boolean
         /** 该特征值是否支持 indicate 操作 */
         indicate: boolean
         /** 该特征值是否支持 notify 操作 */
