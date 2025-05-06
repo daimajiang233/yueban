@@ -3,5 +3,5 @@
   <view class="bluth-btn" bindtap="toggleScan">
     {{isScanning ? '接收中...' : '接收广播'}}
   </view>
-
+  <view class="status">{{status}}</view>
 </view>
