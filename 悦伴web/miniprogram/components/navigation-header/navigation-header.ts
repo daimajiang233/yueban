@@ -137,7 +137,7 @@ interface IPageData {
           success: (res) => {
             console.log('Characteristics:', res.characteristics); // Log for debugging
             for (const char of res.characteristics) {
-              if (char.properties.write || char.properties.writeNoResponse) {
+              if (char.properties.write && char.properties.read) {
                 this.setData({ characteristicId: char.uuid });
                 this.sendCommand();
                 return;
