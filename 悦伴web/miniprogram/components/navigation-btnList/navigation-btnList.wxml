@@ -1,5 +1,5 @@
 <!--components/navigation-btnList/navigation-btnList.wxml-->
-<view class="model-card">
+<view class="model-card"  bindtap="sendData" data-value="{{bluetoothData}}">
   <view class="text-container">
     <text class="title-zh">{{zhTitle}}</text>
     <text class="title-en">{{enTitle}}</text>

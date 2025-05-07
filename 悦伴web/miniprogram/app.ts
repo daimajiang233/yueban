@@ -3,7 +3,13 @@
 
 App<IAppOption>({
   globalData: {
-      
+    userInfo:{
+        name: "AW31N_1YUE BAN",
+        status: false,
+        deviceId: "",
+        serviceId: "",
+        characteristicId: "",
+    }
   },
   onLaunch() {
     // 展示本地存储能力

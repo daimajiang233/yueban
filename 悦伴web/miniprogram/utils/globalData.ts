@@ -1,15 +1,18 @@
 interface UserInfo {
     name: string;
-    deviceId: string;
+    status: boolean;
+    deviceId?: string;
+    serviceId?: string;
+    characteristicId?: string;
     rssi?: number;
     advertisData?: string;
-    foundTime: string;
+    foundTime?: string;
 }
 
 // 定义 IAppOption 接口，明确 globalData 的结构
 interface IAppOption {
     globalData: {
-        userInfo?: UserInfo;
+        userInfo: UserInfo;
         // 可以添加其他全局数据字段
         // someOtherData: number;
     };
