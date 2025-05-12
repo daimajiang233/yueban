@@ -6,6 +6,7 @@ App<IAppOption>({
     userInfo:{
         name: "AW31N_1YUE BAN",
         status: false,
+        isScanning: false,
         deviceId: "",
         serviceId: "",
         characteristicId: "",

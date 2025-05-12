@@ -1,6 +1,7 @@
 interface UserInfo {
     name: string;
     status: boolean;
+    isScanning: boolean;
     deviceId?: string;
     serviceId?: string;
     characteristicId?: string;
