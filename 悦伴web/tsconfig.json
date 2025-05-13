@@ -23,7 +23,7 @@
   },
   "include": [
     "./**/*.ts"
-  ],
+, "miniprogram/utils/bluetooh.ts"  ],
   "exclude": [
     "node_modules"
   ]
