@@ -7,12 +7,14 @@ interface Device {
 
 // 定义内部数据状态接口
 interface DataState {
+    name: string;
     status: string; // 当前状态描述
     isScanning: boolean; // 是否正在扫描
     deviceList: Device[]; // 设备列表
     deviceId: string; // 连接的设备ID
     serviceId: string; // 服务ID
-    characteristicId: string; // 特征值ID
+    notifyCharacteristicId: string; // 通知特征值ID
+    writeCharacteristicId: string; // 写入特征值ID
     receivedData: string; // 接收到的数据
 }
 
@@ -48,7 +50,8 @@ interface UserInfo {
     isScanning: boolean; // 是否正在扫描
     deviceId: string; // 设备ID
     serviceId: string; // 服务ID
-    characteristicId: string; // 特征值ID
+    writeCharacteristicId?: string; // 写入特征值ID
+    notifyCharacteristicId?: string; // 通知特征值ID
 }
 
 // 蓝牙管理类
@@ -60,12 +63,14 @@ class BluetoothManager {
     // 构造函数，初始化数据
     constructor(setData: (data: Partial<UserInfo>) => void) {
         this.data = {
+            name:"YUE BAN",
             status: '',
             isScanning: false,
             deviceList: [],
             deviceId: '',
             serviceId: '',
-            characteristicId: '',
+            notifyCharacteristicId: "",
+            writeCharacteristicId: "",
             receivedData: ''
         };
         this.setData = setData;
@@ -76,7 +81,8 @@ class BluetoothManager {
             isScanning: false,
             deviceId: '',
             serviceId: '',
-            characteristicId: ''
+            notifyCharacteristicId: "",
+            writeCharacteristicId: ""
         });
     }
 
@@ -109,8 +115,7 @@ class BluetoothManager {
                 console.log('蓝牙适配器状态', res);
                 if (!res.available) {
                     this.data.status = '蓝牙不可用';
-                    console.log("适配器状态+",this.data.status);
-                    
+                    console.log("适配器状态+", this.data.status);
                     this.setData({ status: false });
                 }
             }
@@ -225,7 +230,6 @@ class BluetoothManager {
                 this.setData({ deviceId, status: true });
 
                 this.getBLEDeviceServices(deviceId);
-
                 wx.hideLoading();
                 wx.showToast({
                     title: '连接成功',
@@ -255,7 +259,7 @@ class BluetoothManager {
 
                 if (services.length > 0) {
                     const primaryService = services.find(service => service.isPrimary);
-                    const serviceId = primaryService ? primaryService.uuid : services[0].uuid;
+                    const serviceId = primaryService? primaryService.uuid : services[0].uuid;
                     this.data.serviceId = serviceId;
                     this.setData({ serviceId });
                     this.getBLEDeviceCharacteristics(deviceId, serviceId);
@@ -272,56 +276,69 @@ class BluetoothManager {
         });
     }
 
-    // 获取蓝牙设备某个服务中的所有特征值
-    private getBLEDeviceCharacteristics(deviceId: string, serviceId: string): void {
-        wx.getBLEDeviceCharacteristics({
-            deviceId,
-            serviceId,
-            success: (res: WechatMiniprogram.GetBLEDeviceCharacteristicsSuccessCallbackResult) => {
-                console.log('获取设备特征值成功', res);
-                const characteristics: WeChatBLECharacteristic[] = res.characteristics;
+   // 获取蓝牙设备某个服务中的所有特征值
+private getBLEDeviceCharacteristics(deviceId: string, serviceId: string): void {
+    wx.getBLEDeviceCharacteristics({
+        deviceId,
+        serviceId,
+        success: (res: WechatMiniprogram.GetBLEDeviceCharacteristicsSuccessCallbackResult) => {
+            console.log('获取设备特征值成功', res);
+            const characteristics: WeChatBLECharacteristic[] = res.characteristics;
 
-                const notifyCharacteristic = characteristics.find(
-                    char => char.properties.notify
+            const notifyCharacteristic = characteristics.find(
+                char => char.properties.notify
+            );
+
+            const writeCharacteristic = characteristics.find(
+                char => char.properties.write && char.properties.read
+            );
+
+            let statusMessage = '';
+            let status = false;
+
+            // 处理可通知特征值（无论是否存在可写特征值）
+            if (notifyCharacteristic) {
+                this.data.notifyCharacteristicId = notifyCharacteristic.uuid;
+                statusMessage += '发现可通知的特征值';
+                status = true;
+                
+                this.setData({
+                    notifyCharacteristicId: notifyCharacteristic.uuid
+                });
+
+                this.notifyBLECharacteristicValueChange(
+                    deviceId,
+                    serviceId,
+                    notifyCharacteristic.uuid
                 );
-
-                const writeCharacteristic = characteristics.find(
-                    char => char.properties.write
-                );
-
-                if (notifyCharacteristic) {
-                    this.data.characteristicId = notifyCharacteristic.uuid;
-                    this.data.status = '发现可通知的特征值';
-                    
-                    this.setData({
-                        characteristicId: notifyCharacteristic.uuid,
-                        status: true
-                    });
-
-                    this.notifyBLECharacteristicValueChange(
-                        deviceId,
-                        serviceId,
-                        notifyCharacteristic.uuid
-                    );
-                } else if (writeCharacteristic) {
-                    this.data.characteristicId = writeCharacteristic.uuid;
-                    this.data.status = '发现可写的特征值';
-                    this.setData({
-                        characteristicId: writeCharacteristic.uuid,
-                        status: true
-                    });
-                } else {
-                    this.data.status = '未发现合适的特征值';
-                    this.setData({ status: false });
-                }
-            },
-            fail: (err: WechatMiniprogram.GeneralCallbackResult) => {
-                console.error('获取设备特征值失败', err);
-                this.data.status = '获取设备特征值失败';
-                this.setData({ status: false });
             }
-        });
-    }
+
+            // 处理可写特征值（无论是否存在可通知特征值）
+            if (writeCharacteristic) {
+                this.data.writeCharacteristicId = writeCharacteristic.uuid;
+                statusMessage += (statusMessage ? '和' : '') + '发现可写的特征值';
+                status = true;
+                
+                this.setData({
+                    writeCharacteristicId: writeCharacteristic.uuid
+                });
+            }
+
+            if (!status) {
+                statusMessage = '未发现合适的特征值';
+            }
+
+            this.data.status = statusMessage;
+            this.setData({ status });
+            this.updateGlobalUserInfo(); // 同步到全局数据
+        },
+        fail: (err: WechatMiniprogram.GeneralCallbackResult) => {
+            console.error('获取设备特征值失败', err);
+            this.data.status = '获取设备特征值失败';
+            this.setData({ status: false });
+        }
+    });
+}
 
     // 启用特征值变化通知
     private notifyBLECharacteristicValueChange(deviceId: string, serviceId: string, characteristicId: string): void {
@@ -358,7 +375,8 @@ class BluetoothManager {
     // 向蓝牙设备写入数据
     writeBLECharacteristicValue(deviceId: string, serviceId: string, characteristicId: string, value: string): void {
         const buffer = this.str2ab(value);
-
+        console.log(buffer,'发送buffer数据');
+        
         wx.writeBLECharacteristicValue({
             deviceId,
             serviceId,
@@ -387,12 +405,13 @@ class BluetoothManager {
                 console.log('关闭蓝牙连接成功', res);
                 this.data.deviceId = '';
                 this.data.serviceId = '';
-                this.data.characteristicId = '';
+                this.data.notifyCharacteristicId = '';
                 this.data.status = '蓝牙连接已关闭';
                 this.setData({
                     deviceId: '',
                     serviceId: '',
-                    characteristicId: '',
+                    notifyCharacteristicId:'',
+                    writeCharacteristicId:'',
                     status: false
                 });
             },
@@ -439,7 +458,7 @@ class BluetoothManager {
     toggleScan(): void {
         if (!this.data.isScanning) {
             console.log("已经点击");
-            
+
             this.startBluetoothDevicesDiscovery();
         } else {
             this.stopBluetoothDevicesDiscovery();
@@ -460,6 +479,25 @@ class BluetoothManager {
         } else {
             console.error('设备ID不存在');
         }
+    }
+
+    // 更新全局数据的方法
+    private updateGlobalUserInfo() {
+        const app = getApp();
+        const userInfo: UserInfo = {
+            name: this.data.name || this.targetDeviceName,
+            status: this.data.status === '蓝牙设备连接成功',
+            isScanning: this.data.isScanning,
+            deviceId: this.data.deviceId,
+            serviceId: this.data.serviceId,
+            writeCharacteristicId: this.data.writeCharacteristicId,
+            notifyCharacteristicId: this.data. notifyCharacteristicId
+        };
+        app.setGlobalUserInfo(userInfo);
+
+        // const updatedUserInfo = app.getGlobalUserInfo();
+        console.log('上传前:', userInfo);
+        console.log('上传后:', app.globalData.userInfo);
     }
 }
 

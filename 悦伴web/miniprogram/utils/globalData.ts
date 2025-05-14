@@ -4,7 +4,8 @@ interface UserInfo {
     isScanning: boolean;
     deviceId?: string;
     serviceId?: string;
-    characteristicId?: string;
+    writeCharacteristicId?: string;
+    notifyCharacteristicId?: string;
     rssi?: number;
     advertisData?: string;
     foundTime?: string;

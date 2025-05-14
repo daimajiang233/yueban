@@ -9,8 +9,15 @@ App<IAppOption>({
         isScanning: false,
         deviceId: "",
         serviceId: "",
-        characteristicId: "",
+        notifyCharacteristicId: "",
+        writeCharacteristicId: ""
     }
+  },
+  getGlobalUserInfo() {
+    return this.globalData.userInfo;
+  },
+  setGlobalUserInfo(userInfo:any) {
+    this.globalData.userInfo = userInfo;
   },
   onLaunch() {
     // 展示本地存储能力

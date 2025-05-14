@@ -20,25 +20,52 @@ Component({
   data: {
     // 组件内部数据
   },
+
+  lifetimes: {
+    // 组件被创建时
+    created() {
+
+        
+        },
+        // 组件被添加到页面时
+        attached() {
+        this.sendData(1)
+    
+        },
+        // 组件被移除时
+        detached() {
+        
+    }
+  },
+
   methods: {
     // 组件方法
     sendData(event:any){
         const app = getApp()
-        let state = app.globalData.userInfo
+        // let state1 = app.globalData.userInfo
+        const userInfo = app.getGlobalUserInfo()
+        console.log(userInfo,'我是点击');
+        // console.log(state1,'我是点击1');
+        
+        let state = userInfo.isScanning
+
         const value = event.currentTarget.dataset.value;
+        console.log(state,"测试");
+
         console.log(value);
         // 首先要判断下蓝牙的连接状态
-        if(!state.status){
+        if(state){
             // 判断蓝牙已连接 发送指令
             
             console.log(state.status);
+            const decimalValue = parseInt(value, 16); // 将十六进制转换为十进制
             const buffer = new ArrayBuffer(2);
             const dataView = new DataView(buffer);
-            dataView.setUint16(0, state.status, false); // 发送 指令 作为 16 位值，大端序
+            dataView.setUint16(0, decimalValue, true); // 使用转换后的十进制值
             wx.writeBLECharacteristicValue({
-                deviceId: app.globalData.deviceId,
-                serviceId: app.globalData.serviceId,
-                characteristicId: app.globalData.characteristicId,
+                deviceId: userInfo.deviceId,
+                serviceId: userInfo.serviceId,
+                characteristicId: userInfo.writeCharacteristicId,
                 value: buffer,
                 success: () => {
                     this.setData({ status: ' distinguir指令发送成功' });

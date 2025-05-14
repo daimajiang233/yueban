@@ -33,7 +33,11 @@ Component({
       if (this.data.autoInit && this.bluetoothManager) {
         // 自动初始化蓝牙适配器
         this.bluetoothManager.initBluetoothAdapter();
+
       }
+    //   if(this.data.characteristicId){
+        // this.getGlobalUserInfo()
+    //   }
     },
     // 组件被移除时
     detached() {
@@ -57,6 +61,26 @@ Component({
         this.sendData(0xF6) 
     }, 2000)
     },
+
+    // 传递全局数据
+    // getGlobalUserInfo() {
+    //     const app = getApp();
+    //     const userInfo = app.getGlobalUserInfo();
+    //     console.log('Global userInfo:', userInfo);
+    //     const newUserInfo: UserInfo = {
+    //         name: userInfo.name,
+    //         status: true,
+    //         isScanning: true,
+    //         deviceId: this.data.deviceId,
+    //         serviceId: this.data.serviceId,
+    //         characteristicId: this.data.characteristicId
+    //     };
+    //     app.setGlobalUserInfo(newUserInfo);
+
+    //     const updatedUserInfo = app.getGlobalUserInfo();
+    //     console.log('Updated global userInfo:', updatedUserInfo);
+        
+    //   },
 
     // 处理连接设备事件
     handleConnectDevice(e: WechatMiniprogram.TouchEvent) {
