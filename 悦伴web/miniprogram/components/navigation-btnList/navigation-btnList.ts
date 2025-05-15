@@ -29,7 +29,7 @@ Component({
         },
         // 组件被添加到页面时
         attached() {
-        this.sendData(1)
+        // this.sendData(1) 测试
     
         },
         // 组件被移除时
@@ -41,6 +41,16 @@ Component({
   methods: {
     // 组件方法
     sendData(event:any){
+        wx.navigateTo({
+            url: '/pages/my-Model/my-Model', // 目标页面路径，可携带参数
+            success: function(res) {
+              console.log('跳转成功');
+            },
+            fail: function(err) {
+              console.log('跳转失败', err);
+            }
+          });
+
         const app = getApp()
         // let state1 = app.globalData.userInfo
         const userInfo = app.getGlobalUserInfo()

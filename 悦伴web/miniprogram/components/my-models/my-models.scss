@@ -1,0 +1,36 @@
+.button-container {
+    display: inline-block;
+    width: 50%; /* 每行两个，宽度各占50% */
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .button-text {
+    margin-left: 5px;
+    font-size: 16px;
+    color: #000;
+  }
+  
+  .button-icon {
+    font-size: 20px;
+    color: #000;
+  }
+  
+  .button-container:nth-child(odd) .button {
+    background-color: #fce4ec;
+  }
+  
+  .button-container:nth-child(even) .button {
+    background-color: #e0f7fa;
+  }

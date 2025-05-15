@@ -1,0 +1,63 @@
+/* pages/my-Model/my-Model.wxss */
+.page-wrapper{
+    height: 100vh;
+    flex-direction: column;
+    display: flex
+}
+.model-title{
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        width: 600rpx; /* 宽度根据图片比例估算，可调整 */
+        height: 100rpx; /* 高度根据图片比例估算，可调整 */
+      
+        /* 文本样式 */
+        text {
+          color: #000; /* 黑色文本 */
+          font-size: 40rpx; /* 字体大小，微信小程序常用 rpx */
+          font-weight: bold;
+        }
+      }
+.button-wrapper {
+    flex-wrap: wrap; /* 允许换行 */
+    width: 100%;
+    gap: 0; /* 去除 inline-block 的空格问题 */
+    flex-grow: 1; /* 让 button-wrapper 填充剩余空间 */
+  }
+ .start-button-wrapper{
+    display: flex;
+    align-items: center; /* 改为 center，确保按钮垂直居中 */
+    justify-content: center;
+    margin-top: auto; /* 推到底部 */
+    margin-bottom: 200rpx; /* 与底部的距离，单位可根据需求调整 */
+  }
+  .start-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 600rpx; /* 微信小程序常用 rpx 单位，宽度根据图片比例调整 */
+    height: 100rpx; /* 高度根据图片比例调整 */
+    background: linear-gradient(
+      to right,
+      #ffccd5,
+      #ff80ab
+    ); /* 渐变从浅粉色到深粉色 */
+    border-radius: 50rpx; /* 圆角 */
+    position: relative;
+  
+    /* 文本样式 */
+    text {
+      color: #fff;
+      font-size: 32rpx; /* 字体大小，微信小程序常用 rpx */
+      font-weight: bold;
+    }
+  
+    // /* 左侧箭头（使用伪元素实现） */
+    // &::before {
+    //   content: '←'; /* 箭头字符 */
+    //   color: #fff;
+    //   font-size: 32rpx;
+    //   position: absolute;
+    //   left: 30rpx; /* 箭头与左侧的距离 */
+    // }
+  }
