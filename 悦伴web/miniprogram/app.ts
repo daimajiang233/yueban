@@ -6,10 +6,18 @@ App<IAppOption>({
     userInfo:{
         name: "AW31N_1YUE BAN",
         status: false,
+        isScanning: false,
         deviceId: "",
         serviceId: "",
-        characteristicId: "",
+        notifyCharacteristicId: "",
+        writeCharacteristicId: ""
     }
+  },
+  getGlobalUserInfo() {
+    return this.globalData.userInfo;
+  },
+  setGlobalUserInfo(userInfo:any) {
+    this.globalData.userInfo = userInfo;
   },
   onLaunch() {
     // 展示本地存储能力

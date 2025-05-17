@@ -12,16 +12,16 @@
     <text>功能展示</text>
   </view>
   <view>
-    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" bluetoothData="0xFFF" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="我的模型" enTitle="MY MODEL" bluetoothData="666" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
-    <navigation-btnList zhTitle="摇一摇" enTitle="SHAKE IT" bluetoothData="0xAAA" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="摇一摇" enTitle="SHAKE IT" bluetoothData="F5" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
-    <navigation-btnList zhTitle="智能加温" enTitle="HEATING" bluetoothData="0xBBB" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="智能加温" enTitle="HEATING" bluetoothData="F4" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
-    <navigation-btnList zhTitle="使用教程" enTitle="INSTRUTIONS" bluetoothData="0xCCC" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="使用教程" enTitle="INSTRUTIONS" bluetoothData="F3" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   <view>
     <navigation-btnList zhTitle="分享" enTitle="SHARE" bluetoothData="0xEEE" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>

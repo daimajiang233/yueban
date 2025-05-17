@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/logo/index"
+    "pages/logo/index",
+    "pages/my-Model/my-Model"
   ],
   "window": {
     "navigationBarTitleText": "悦伴",

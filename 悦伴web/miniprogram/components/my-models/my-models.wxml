@@ -1,0 +1,6 @@
+<view class="button-container">
+  <view class="button {{className}}" bindtap="handleTap" data-index="{{index}}">
+    <text class="button-icon">{{icon}}</text>
+    <text class="button-text">{{text}}</text>
+  </view>
+</view>

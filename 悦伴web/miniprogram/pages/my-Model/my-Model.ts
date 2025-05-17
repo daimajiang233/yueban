@@ -1,17 +1,18 @@
-// pages/index/index.ts
+// pages/my-Model/my-Model.ts
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    remoteModel:false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad() {
+
   },
 
   /**
