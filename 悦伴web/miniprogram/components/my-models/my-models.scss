@@ -23,12 +23,16 @@
   }
   
   .button-icon {
-    font-size: 20px;
-    color: #000;
+    // font-size: 20px;
+    // colo6: #000;
+    width: 80rpx;
+    height: 80rpx;
   }
   
   .button-container:nth-child(odd) .button {
-    background-color: #fce4ec;
+    // background-color: #fce4ec;
+    background-color: #fff;
+
   }
   
   .button-container:nth-child(even) .button {

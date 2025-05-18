@@ -15,6 +15,10 @@ Component({
       className: {
         type: String,
         value: ''
+      },
+      value: {
+        type: String,
+        value: ''
       }
     },
     methods: {
