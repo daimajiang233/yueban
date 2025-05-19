@@ -1,5 +1,5 @@
 <view class="button-container">
-  <view class="button {{className}}" bindtap="handleTap" data-value='{{vale}}' data-index="{{index}}">
+  <view class="button {{className}} {{button-clicked}}" bindtap="onTap" data-value='{{value}}' data-index="{{index}}">
     <!-- <text ></text> -->
     <image src="{{icon}}" class="button-icon" mode=""/>
     <text class="button-text">{{text}}</text>

@@ -1,11 +1,31 @@
 // pages/my-Model/my-Model.ts
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
-    startPause: false
+    startPause: false,
+    buttons: Array(10).fill(false) // 初始化 10 个按钮，未选中
+  },
+  handleButtonTap(e:any) {
+    console.log(e.currentTarget,1234);
+    
+    const index = Number(e.currentTarget.dataset.index); // 获取点击按钮的索引
+    const newButtons = Array(10).fill(false); // 重置所有按钮
+    newButtons[index] = true; // 设置当前按钮为选中
+    console.log(index);
+
+    // 更新数据
+    this.setData({
+      buttons: newButtons
+    });
+
+    // 触发自定义事件，传递 index 和 data-value
+    // this.triggerEvent('buttonTap', { 
+    //   index, 
+    //   value: e.currentTarget.dataset.value 
+    // });
+    console.log(1);
   },
 
   /**

@@ -7,16 +7,16 @@
         <title-component></title-component>
     </view>
     <view class="button-wrapper">
-        <button-component text="温婉" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="0" className="wenwan" bind:buttonTap="handleButtonTap" data-value="0xf01"></button-component>
-        <button-component text="触感" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="1" className="chugan" bind:buttonTap="handleButtonTap" data-value="0xf02"></button-component>
-        <button-component text="轻语" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="2" className="qingyu" bind:buttonTap="handleButtonTap" data-value="0xf03"></button-component>
-        <button-component text="宇宙" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="3" className="yuzhou" bind:buttonTap="handleButtonTap" data-value="0xf04"></button-component>
-        <button-component text="星海" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="4" className="xinghai" bind:buttonTap="handleButtonTap" data-value="0xf05"></button-component>
-        <button-component text="季风" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="5" className="jifeng" bind:buttonTap="handleButtonTap" data-value="0xf06"></button-component>
-        <button-component text="震撼" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="6" className="zhenhan" bind:buttonTap="handleButtonTap" data-value="0xf07"></button-component>
-        <button-component text="纵横" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="7" className="zongheng" bind:buttonTap="handleButtonTap" data-value="0xf08"></button-component>
-        <button-component text="微享" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="6" className="weixiang" bind:buttonTap="handleButtonTap" data-value="0xf09"></button-component>
-        <button-component text="银河" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="7" className="yinhe" bind:buttonTap="handleButtonTap" data-value="0xf0A"></button-component>
+      <button-component text="温婉" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="0" className="wenwan {{buttons[0] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf01"></button-component>
+      <button-component text="触感" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="1" className="chugan {{buttons[1] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf02"></button-component>
+      <button-component text="轻语" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="2" className="qingyu {{buttons[2] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf03"></button-component>
+      <button-component text="宇宙" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="3" className="yuzhou {{buttons[3] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf04"></button-component>
+      <button-component text="星海" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-data-index="4" className="xinghai {{buttons[4] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf05"></button-component>
+      <button-component text="季风" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="5" className="jifeng {{buttons[5] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf06"></button-component>
+      <button-component text="震撼" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="6" className="zhenhan {{buttons[6] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf07"></button-component>
+      <button-component text="纵横" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="7" className="zongheng {{buttons[7] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf08"></button-component>
+      <button-component text="微享" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="8" className="weixiang {{buttons[8] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf09"></button-component>
+      <button-component text="银河" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" data-index="9" className="yinhe {{buttons[9] ? 'button-clicked' : ''}}" bind:buttonTap="handleButtonTap" data-value="0xf0A"></button-component>
     </view>
     <view class="start-button-wrapper" bind:buttonTap="startBtn" data-value="0xf0B ">
         <view class="start-button">
