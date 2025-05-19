@@ -17,9 +17,10 @@
   <view>
     <navigation-btnList zhTitle="摇一摇" enTitle="SHAKE IT" bluetoothData="F5" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
-  <view>
+  <!-- 第一版没有 -->
+  <!-- <view>
     <navigation-btnList zhTitle="智能加温" enTitle="HEATING" bluetoothData="F4" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
-  </view>
+  </view> -->
   <view>
     <navigation-btnList zhTitle="使用教程" enTitle="INSTRUTIONS" bluetoothData="F3" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
