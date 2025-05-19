@@ -1,5 +1,7 @@
 {
   "usingComponents": {
-   "button-component": "/components/my-models/my-models"
+   "button-component": "/components/my-models/my-models",
+   "title-component": "/components/model-title/model-title"
+
   }
 }
