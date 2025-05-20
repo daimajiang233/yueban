@@ -19,15 +19,23 @@ Component({
       // }
       onTap(e:any) {
         const index = Number(e.currentTarget.dataset.index); // 从 dataset 读取
-        console.log(this.properties.index,'231');
-        console.log(index,123);
+        const value = this.properties.value; // 从 dataset 读取
+
+        // console.log(this.properties.index,'231');
+        console.log(value,123);
         
         
         this.triggerEvent('buttonTap', {          
-          index: this.properties.valueindex,
+          index: this.properties.index,
           value: this.properties.value
         });
-      }
+
+        // this.sendData(this.properties.value)
+        console.log(value,"value");
+        
+      },
+
+    
 
     }
   })

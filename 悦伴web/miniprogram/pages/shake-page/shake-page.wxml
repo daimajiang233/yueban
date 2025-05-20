@@ -1,0 +1,20 @@
+<!--pages/shake-page/shake-page.wxml-->
+<view class="container">
+    <view class="model-title">
+        <text>摇一摇</text>
+    </view>
+    <view class="shake-images" class="image-container {{isShaking ? 'shake-animation' : ''}}">
+       <view>
+            <image src="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%208.png"  mode="aspectFit"/>
+       </view>
+        <view>
+            <text class="prompt-text">
+                试着用手晃动手机
+            </text>
+        </view>
+        <view class="random-number" wx:if="{{randomNumber !== null}}">
+            <text>随机数: {{randomNumber}}</text>
+        </view>
+    </view>
+
+</view>

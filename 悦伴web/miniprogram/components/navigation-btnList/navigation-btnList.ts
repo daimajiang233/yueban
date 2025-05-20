@@ -16,6 +16,10 @@ Component({
         type: String,
         value: ''
       },
+      pageSrc: {
+        type: String,
+        value: ''
+      }
   },
   data: {
     // 组件内部数据
@@ -49,53 +53,40 @@ Component({
         console.log(userInfo,'我是点击');
         // console.log(state1,'我是点击1');
         
-        // let state = userInfo.isScanning
-        let state = true
+        let state = userInfo.isScanning
+        // let state = true
 
         const value = event.currentTarget.dataset.value;
-        console.log(state,"测试");
+        const pageSrc = event.currentTarget.dataset.pagesrc;
+        console.log(pageSrc,"测试");
 
         console.log(value);
         // 首先要判断下蓝牙的连接状态
         if(state){
             // 判断蓝牙已连接 发送指令
             wx.navigateTo({
-              url: '/pages/my-Model/my-Model', // 目标页面路径，可携带参数
+              url: `/pages/${pageSrc}`, // 目标页面路径，可携带参数
               success: function(res) {
                 console.log('跳转成功');
               },
               fail: function(err) {
+                wx.showToast({
+                    title: '未连接蓝牙！',
+                    icon: 'error',
+                    duration: 1500 // 提示显示 1.5 秒
+                  });
                 console.log('跳转失败', err);
               }
             });
 
-            console.log(state.status);
-            const decimalValue = parseInt(value, 16); // 将十六进制转换为十进制
-            const buffer = new ArrayBuffer(2);
-            const dataView = new DataView(buffer);
-            dataView.setUint16(0, decimalValue, true); // 使用转换后的十进制值
-            wx.writeBLECharacteristicValue({
-                deviceId: userInfo.deviceId,
-                serviceId: userInfo.serviceId,
-                characteristicId: userInfo.writeCharacteristicId,
-                value: buffer,
-                success: () => {
-                    this.setData({ status: ' distinguir指令发送成功' });
-                    console.log('指令发送成功');
-                    // this.enableNotifications(); // 发送指令后启用通知
-                },
-                fail: (res) => {
-                    this.setData({ status: `指令发送失败: ${res.errMsg}` });
-                }
-            });
-
         }else{
             wx.showToast({
-                title: "蓝牙未连接",
-                icon: "none",
-                duration: 2000,
+                title: '未连接蓝牙！',
+                icon: 'error',
+                duration: 1500 // 提示显示 1.5 秒
               });
         }
     }
+
   }
 })
