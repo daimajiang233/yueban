@@ -14,6 +14,7 @@ Component({
   data: {
     status: '',
     isScanning: false,
+    isConnected:false,
     deviceList: [],
     deviceId: '',
     serviceId: '',
