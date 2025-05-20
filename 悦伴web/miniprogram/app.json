@@ -3,7 +3,10 @@
     "pages/index/index",
     "pages/logs/logs",
     "pages/logo/index",
-    "pages/my-Model/my-Model"
+    "pages/my-Model/my-Model",
+    "pages/shake-page/shake-page",
+    "pages/instrutions/instrutions",
+    "pages/share/share"
   ],
   "window": {
     "navigationBarTitleText": "悦伴",

@@ -14,12 +14,16 @@ Page({
     const newButtons = Array(10).fill(false); // 重置所有按钮
     newButtons[index] = true; // 设置当前按钮为选中
     console.log(index);
-
+    this.sendData(e.currentTarget.dataset.value)
     // 更新数据
     this.setData({
       buttons: newButtons
     });
-
+        
+    // 切换 startPause 状态
+    this.setData({
+        startPause: true, // 切换 true/false
+    });
     // 触发自定义事件，传递 index 和 data-value
     // this.triggerEvent('buttonTap', { 
     //   index, 
@@ -28,11 +32,71 @@ Page({
     console.log(1);
   },
 
+// 组件被添加到页面时
+sendData(value:string){
+        
+
+            const app = getApp()
+            const userInfo = app.getGlobalUserInfo()
+            
+            let state = userInfo.isScanning
+            // let state = true
+    
+            // const value = event
+    
+            console.log(value,'发送指令');
+            // 首先要判断下蓝牙的连接状态
+            if(state){
+                // 判断蓝牙已连接 发送指令
+                // console.log(state.status);
+                const decimalValue = parseInt(value, 16); // 将十六进制转换为十进制
+                const buffer = new ArrayBuffer(2);
+                const dataView = new DataView(buffer);
+                dataView.setUint16(0, decimalValue, true); // 使用转换后的十进制值
+                wx.writeBLECharacteristicValue({
+                    deviceId: userInfo.deviceId,
+                    serviceId: userInfo.serviceId,
+                    characteristicId: userInfo.writeCharacteristicId,
+                    value: buffer,
+                    success: () => {
+                    
+                        console.log('指令发送成功暂停启动');
+                        // this.enableNotifications(); // 发送指令后启用通知
+                        
+                    },
+                    fail: (res) => {
+                        this.setData({ status: `指令发送失败: ${res.errMsg}` });
+                    }
+                });
+    
+            }else{
+                wx.showToast({
+                    title: "蓝牙未连接",
+                    icon: "none",
+                    duration: 2000,
+                });
+            }
+},
+
+// methods: {
+    startBtn(e:any){
+        const value = e.currentTarget.dataset.value; // 获取 data-value="0xf0B"
+        console.log(value, "startBtn triggered");
+
+        // 调用 sendData 发送蓝牙指令
+        this.sendData(value);
+            
+        // 切换 startPause 状态
+        this.setData({
+            startPause: !this.data.startPause, // 切换 true/false
+        });
+        
+    },
+// },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-
   },
 
   /**

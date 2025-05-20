@@ -6,6 +6,10 @@
     padding: 0 10rpx;
     background: #f5f5f5;
 }
+.button-clicked{
+    border: 100px solid green !important;
+    color: red;
+  }
 .button-wrapper {
     flex-wrap: wrap; /* 允许换行 */
     width: 100%;
