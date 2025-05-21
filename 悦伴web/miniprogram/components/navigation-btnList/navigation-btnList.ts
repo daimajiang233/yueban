@@ -45,6 +45,7 @@ Component({
   methods: {
     // 组件方法
     sendData(event:any){
+        wx.vibrateShort({ type: 'heavy' });
         // const pageSrc1 = event.currentTarget.dataset.pagesrc;
 
         // wx.navigateTo({

@@ -19,6 +19,7 @@ Component({
         
       // }
       onTap(e:any) {
+        wx.vibrateShort({ type: 'heavy' });
         // const index = Number(e.currentTarget.dataset.index); // 从 dataset 读取
         const value = this.properties.value; // 从 dataset 读取
 
