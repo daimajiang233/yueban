@@ -240,7 +240,7 @@ Component({
             const targetCharacteristic = characteristics.find(char => char.properties.write && char.properties.read);
             if (targetCharacteristic) {
               this.setData({ characteristicId: targetCharacteristic.uuid, status: `获取特征值成功: ${targetCharacteristic.uuid}` });
-              userInfo.characteristicId = targetCharacteristic;
+              userInfo.writeCharacteristicId = targetCharacteristic.uuid;
               console.log(`选择特征值ID: ${this.data.characteristicId}`);
               resolve(targetCharacteristic.uuid);
             } else {
@@ -382,7 +382,7 @@ Component({
           }
 
           // 等待片刻以便发现设备
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
 
           // 尝试查找、连接设备并获取服务和特征值
           try {

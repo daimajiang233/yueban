@@ -5,5 +5,18 @@
     "compileHotReLoad": true,
     "urlCheck": false
   },
-  "libVersion": "3.8.4"
+  "libVersion": "3.8.4",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/share/share",
+          "pathName": "pages/shake-page/shake-page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

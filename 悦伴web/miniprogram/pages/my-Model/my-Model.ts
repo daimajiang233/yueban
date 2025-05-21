@@ -35,6 +35,8 @@ Page({
         const userInfo = app.getGlobalUserInfo()
 
         let state = userInfo.isScanning
+            console.log("点击了",state,value);
+
         // let state = true
 
         // const value = event
@@ -54,10 +56,8 @@ Page({
                 characteristicId: userInfo.writeCharacteristicId,
                 value: buffer,
                 success: () => {
-
                     console.log('指令发送成功暂停启动');
                     // this.enableNotifications(); // 发送指令后启用通知
-
                 },
                 fail: (res) => {
                     this.setData({ status: `指令发送失败: ${res.errMsg}` });
