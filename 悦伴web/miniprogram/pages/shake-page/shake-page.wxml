@@ -1,20 +1,31 @@
-<!--pages/shake-page/shake-page.wxml-->
+<!-- WXML 文件：页面结构 -->
 <view class="container">
-    <view class="model-title">
-        <text>摇一摇</text>
-    </view>
-    <view class="shake-images" class="image-container {{isShaking ? 'shake-animation' : ''}}">
-       <view>
-            <image src="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%208.png"  mode="aspectFit"/>
-       </view>
-        <view>
-            <text class="prompt-text">
-                试着用手晃动手机
-            </text>
-        </view>
-        <view class="random-number" wx:if="{{randomNumber !== null}}">
-            <text>随机数: {{randomNumber}}</text>
-        </view>
-    </view>
+  <!-- 标题 -->
+  <text class="title">摇一摇</text>
 
+  <!-- 圆形控件 -->
+  <view class="circle-container" bindtap="clickFn" data-value="0xFC">
+    <view class="circle-top">
+      <view class="circle">
+      <view class="inner-circle">
+      {{sendStatus?"已开始":"已暂停"}}
+      </view>
+    </view>
+    </view>
+  </view>
+
+  <!-- 震动图标 -->
+  <view class="icon-container">
+    <image src="/images/vibration-icon.png" class="vibration-icon"></image>
+  </view>
+
+  <!-- 滑动条 -->
+  <view class="slider-container">
+    <text class="slider-label">震动强度设置</text>
+    <slider bindchange="onSliderChange" min="20" max="100" value="{{vibrationLevel}}" show-value="false" activeColor="pink"/>
+    <view class="slider-range">
+      <text>Min</text>
+      <text>Max</text>
+    </view>
+  </view>
 </view>

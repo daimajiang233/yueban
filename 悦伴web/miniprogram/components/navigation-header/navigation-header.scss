@@ -5,7 +5,7 @@ $border-color: #ff0000;
 $border-radius: 40rpx;
 $button-width: 225rpx;
 $spacing-unit: 22rpx;
-$header-height: 320rpx;
+$header-height: 345rpx;
 $header-width: 700rpx;
 
 /* 按钮样式的混入 */
@@ -22,15 +22,20 @@ $header-width: 700rpx;
 
 /* 头部容器 */
 .header-style {
-  height: $header-height;
-  width: $header-width;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; /* 将内容对齐到底部 */
-  align-items: left; /* 水平居中 */
-  padding-bottom: $spacing-unit; /* 一致的间距 */
-  position: relative; /* 用于背景层叠 */
-
+    height: $header-height;
+    width: $header-width;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 这将使子元素对齐到容器底部 */
+    align-items: flex-start; /* 改为 flex-start 以左对齐（之前是 left，应为 flex-start） */
+    // padding-bottom: $spacing-unit; /* 底部内边距 */
+    position: relative;
+  
+    .bluth-btn-container {
+    //   border: 1px solid red;
+      /* 如果需要按钮容器紧贴底部，可以添加 margin-top: auto */
+      margin-top: auto;
+    }
   /* 按钮样式 */
   .bluth-btn {
     @include button-base;
@@ -39,11 +44,20 @@ $header-width: 700rpx;
     margin:0 0 10rpx 30rpx; /* 微调按钮位置 *\
     align-self: right; /* 在flex容器中居中 */
   }
+  .status-success{
+    padding:0 30rpx;
+    color: #00B26A;
+  }
+  .status-err{
+    padding:0 30rpx;
+    color: #777777;
+  }
 }
 
 /* 背景图片容器 */
 .bg-images {
-  background-image: url("http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20155.png"); /* 本地图片路径 */
+  background-image: url("http://lovelilin.com/yueban/assets/banner.jpg"); /* 本地图片路径 */
+//   background-image: url("http://114.55.39.240/images/banner.jpg");
   background-size: cover;
   // z-index: -1; /* 放置在内容后面 有bug会导致按钮无法点击*/
 }

@@ -10,6 +10,7 @@ interface DataState {
     name: string;
     status: string; // 当前状态描述
     isScanning: boolean; // 是否正在扫描
+    isConnected?:boolean;
     deviceList: Device[]; // 设备列表
     deviceId: string; // 连接的设备ID
     serviceId: string; // 服务ID
@@ -48,6 +49,7 @@ interface UserInfo {
     name: string; // 设备名称
     status: boolean; // 连接状态（成功/失败）
     isScanning: boolean; // 是否正在扫描
+    isConnected?:boolean,
     deviceId: string; // 设备ID
     serviceId: string; // 服务ID
     writeCharacteristicId?: string; // 写入特征值ID
@@ -227,7 +229,7 @@ class BluetoothManager {
                 console.log('连接蓝牙设备成功', res);
                 this.data.deviceId = deviceId;
                 this.data.status = '蓝牙设备连接成功';
-                this.setData({ deviceId, status: true });
+                this.setData({ deviceId, status: true,isScanning:true,isConnected:true });
 
                 this.getBLEDeviceServices(deviceId);
                 wx.hideLoading();
@@ -461,13 +463,13 @@ private getBLEDeviceCharacteristics(deviceId: string, serviceId: string): void {
 
             this.startBluetoothDevicesDiscovery();
         } else {
-            this.stopBluetoothDevicesDiscovery();
-            wx.showToast({
-                title: "已停止扫描",
-                icon: "success",
-                duration: 1500,
-                mask: true
-            });
+            // this.stopBluetoothDevicesDiscovery();
+            // wx.showToast({
+            //     title: "已停止扫描",
+            //     icon: "success",
+            //     duration: 1500,
+            //     mask: true
+            // });
         }
     }
 

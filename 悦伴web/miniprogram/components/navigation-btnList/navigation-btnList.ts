@@ -45,7 +45,25 @@ Component({
   methods: {
     // 组件方法
     sendData(event:any){
-        
+        wx.vibrateShort({ type: 'heavy' });
+        // const pageSrc1 = event.currentTarget.dataset.pagesrc;
+
+        // wx.navigateTo({
+        //     url: `/pages/${pageSrc1}`, // 目标页面路径，可携带参数
+        //     success: function(res) {
+        //       console.log('跳转成功');
+        //     },
+        //     fail: function(err) {
+        //       wx.showToast({
+        //           title: '未连接蓝牙！',
+        //           icon: 'error',
+        //           duration: 1500 // 提示显示 1.5 秒
+        //         });
+        //       console.log('跳转失败', err);
+        //     }
+        //   });
+
+
 
         const app = getApp()
         // let state1 = app.globalData.userInfo
@@ -62,7 +80,7 @@ Component({
 
         console.log(value);
         // 首先要判断下蓝牙的连接状态
-        if(state){
+        if(state || pageSrc=== 'instrutions/instrutions'){
             // 判断蓝牙已连接 发送指令
             wx.navigateTo({
               url: `/pages/${pageSrc}`, // 目标页面路径，可携带参数

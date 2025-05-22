@@ -1,7 +1,9 @@
 <!--components/navigation-header/navigation-header.wxml-->
 <view class="header-style bg-images">
-  <view class="bluth-btn" bindtap="toggleScan">
-    {{isScanning?"蓝牙已连接":"蓝牙未连接"}}
+  <view class="bluth-btn-container">
+    <view class="bluth-btn" bindtap="toggleScan">
+        {{connected?"断开连接":"点击连接"}}
+    </view>
+    <view class="{{connected?'status-success':'status-err'}}"> {{connected?"已连接":"未连接"}}</view>
   </view>
-  <view class="status">{{status}}</view>
 </view>
