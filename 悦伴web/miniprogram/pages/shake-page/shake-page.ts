@@ -37,10 +37,9 @@ Page({
     console.log(this.data.vibrationLevel);
     const app = getApp()
     const userInfo = app.getGlobalUserInfo()
-    const decimalValue = parseInt(value, 16); // 将十六进制转换为十进制
     const buffer = new ArrayBuffer(2);
     const dataView = new DataView(buffer);
-    dataView.setUint16(0, decimalValue, true); // 使用转换后的十进制值
+    dataView.setUint16(0, value, true);
     console.log(userInfo);
     
     wx.writeBLECharacteristicValue({
