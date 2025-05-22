@@ -2,6 +2,7 @@
   "description": "项目配置文件",
   "miniprogramRoot": "miniprogram/",
   "compileType": "miniprogram",
+  "cloudfunctionRoot": "cloudfunctions/",
   "setting": {
     "useCompilerPlugins": [
       "typescript",
@@ -36,5 +37,6 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wx641c75209bccc46a"
+  "appid": "wx641c75209bccc46a",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }
