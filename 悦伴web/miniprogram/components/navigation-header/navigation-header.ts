@@ -127,7 +127,6 @@ Component({
         wx.getBluetoothDevices({
           success: (res) => {
             const devices = res.devices;
-            console.log('发现的设备:', devices);
             const targetDevice = devices.find(device => device.name === targetName || device.localName === targetName);
             if (targetDevice) {
               this.setData({ deviceId: targetDevice.deviceId, status: `找到设备: ${targetName}` });
@@ -259,6 +258,8 @@ Component({
 
     // 检查连接状态
     checkConnectionStatus() {
+    const app = getApp();
+    const userInfo = app.getGlobalUserInfo();
       if (!this.data.deviceId) {
         console.log('无设备ID，无法检查连接状态');
         this.setData({ status: '无设备ID，无法检查连接状态' });
@@ -271,11 +272,15 @@ Component({
           success: () => {
             console.log(`设备 ${this.data.deviceId} 已连接`);
             this.setData({ connected: true, status: `设备 ${this.data.deviceId} 已连接` });
+            userInfo.isScanning= true
+
             resolve(true);
           },
           fail: () => {
             console.log(`设备 ${this.data.deviceId} 未连接`);
             this.setData({ connected: false, status: `设备 ${this.data.deviceId} 未连接` });
+            userInfo.isScanning= false
+
             resolve(false);
           }
         });
@@ -293,6 +298,8 @@ Component({
     
       // 每秒检查一次连接状态
       const timerId = setInterval(() => {
+        const app = getApp();
+        const userInfo = app.getGlobalUserInfo();
         if (!this.data.connected || !this.data.deviceId) {
           // 如果未连接或缺少必要信息，清除定时器
           clearInterval(timerId);
@@ -303,8 +310,10 @@ Component({
     
         // 获取已连接的蓝牙设备（必须传入 services，如果不需要可以传空数组 []）
         wx.getConnectedBluetoothDevices({
-          services: [], // 如果不需要特定服务，传空数组；否则传入你的服务 UUID 列表
+          services: [this.data.serviceId], // 如果不需要特定服务，传空数组；否则传入你的服务 UUID 列表
           success: (res) => {
+              console.log(res.devices,this.data.deviceId,this.data.name,"aoe");
+              
             // 检查目标设备是否在已连接设备列表中
             const isConnected = res.devices.some(device => 
               device.deviceId === this.data.deviceId && device.name === this.data.name
@@ -313,15 +322,19 @@ Component({
             if (isConnected) {
               console.log('设备仍然连接:', this.data.name);
               this.setData({ status: '连接正常' });
+              userInfo.isScanning= true
+
             } else {
               console.log('设备已断开连接:', this.data.name);
               this.setData({ connected: false, status: '连接已断开' });
+            //   userInfo.isScanning= false
+
               // 清除定时器
               clearInterval(timerId);
               this.setData({ timerId: null });
               
               // 更新全局状态
-              userInfo.isScanning = true;
+              userInfo.isScanning = false;
               
               // 更新本地状态
               this.setData({ 
@@ -497,9 +510,13 @@ Component({
         // this.stopBluetoothProcess().then(() => {
         //   this.startBluetoothProcess(); // 重新启动蓝牙流程
         // });
+        console.log('已经关闭',this.data.connected);
+        
       } else {
         // 如果未连接，直接启动蓝牙流程
         this.startBluetoothProcess();
+        console.log('已经打开',this.data.connected);
+
       }
     }
   }

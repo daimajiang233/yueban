@@ -1,1 +1,47 @@
-/* pages/instrutions/instrutions.wxss */
+.container {
+    padding: 20rpx;
+  }
+  .section {
+    margin-bottom: 20rpx;
+  }
+  .section-title1 {
+    font-size: 40rpx;
+    font-weight: bold;
+    color: #E4007F;
+    margin-bottom: 10rpx;
+  }
+  .section-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #E4007F;
+    margin-bottom: 10rpx;
+  }
+  .section-content {
+    line-height: 40rpx;
+  }
+  .tip {
+    color: #666;
+    margin-bottom: 10rpx;
+  }
+  .function-item {
+    margin-bottom: 10rpx;
+  }
+  .function-title {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #E4007F;
+    margin-bottom: 5rpx;
+  }
+  .function-desc {
+    color: #666;
+    font-size: 29rpx;
+
+  }
+  .notice {
+    color: #f00;
+    margin-bottom: 10rpx;
+  }
+  .end {
+    text-align: center;
+    color: #E4007F;
+  }
