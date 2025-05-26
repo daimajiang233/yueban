@@ -10,7 +10,11 @@ App<IAppOption>({
         deviceId: "",
         serviceId: "",
         notifyCharacteristicId: "",
-        writeCharacteristicId: ""
+        writeCharacteristicId: "",
+        modelInfo:{
+          startPause: false,
+          buttons: new Array(10).fill(false)
+        }
     }
   },
   getGlobalUserInfo() {
