@@ -2,6 +2,7 @@
 <!-- 弹窗部分 -->
 <view class="wrap-container" wx:if="{{!roomId}}">
   <view class="creat-wrap">
+    <view class="wrap-container-title">远程遥控</view>
     <view><input type="text" placeholder="输入房间id"  value="{{inputMessage}}" bindinput="onInput" /></view>
     <view>
       <view class='{{inputMessage?"join-btn":"ceart-btn"}}' bindtap="joinRoom">加入房间</view>
@@ -12,7 +13,7 @@
 </view>
 <view>
 <!-- 主体部分 -->
-<view class="body-wrapper">
+<view class="body-wrapper {{creatStatus?'creatStatus':''}}">
   <view  class="button-wrapper">
     <button-component text="温婉" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="0" className="wenwan {{buttons[0] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf1"></button-component>
     <button-component text="触感" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20144.png" index="1" className="chugan {{buttons[1] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf2"></button-component>
@@ -31,6 +32,7 @@
         </view>
     </view>
 </view>
+    <view class="creatInfo" wx:if="{{creatStatus}}">设备已进入被远程遥控模式，目前暂无法点击，返回即可断开遥控</view>
   1
 </view>
 <text>{{roomId}}</text>

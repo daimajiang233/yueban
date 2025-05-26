@@ -2,6 +2,7 @@ Page({
   data: {
     roomIdInput: '', // 输入的房间ID
     roomId:'',
+    creatStatus: true, //区分被远程角色
     inputMessage: '', // 输入的消息
     logs: [], // 消息日志
     ws: null, // WebSocket 实例
@@ -36,7 +37,7 @@ Page({
   connectWebSocket() {
     const that = this;
     wx.connectSocket({
-      url: 'ws://localhost:8080', // 替换为你的服务器地址，生产环境用 wss://
+      url: 'ws://114.55.39.240:3000', // 替换为你的服务器地址，生产环境用 wss://
       success() {
         that.addLog('正在连接服务器...');
         console.log('正在连接服务器...');
@@ -58,12 +59,14 @@ Page({
         const data = JSON.parse(res.data);
         // 根据消息类型处理并显示 message 字段
         if (data.type === 'roomCreated') {
-          this.setData({roomId:data.roomId})
+          that.setData({roomId:data.roomId})
+          that.setData({creatStatus:true})
           that.addLog(`${data.message}: ${data.roomId}`);
           console.log(`${data.message}: ${data.roomId}`);
           
         } else if (data.type === 'joined') {
-          this.setData({roomId:data.roomId})
+            that.setData({roomId:data.roomId})
+            that.setData({creatStatus:false})
           that.addLog(`${data.message}: ${data.roomId}`);
           console.log(`${data.message}: ${data.roomId}`);
 
@@ -72,7 +75,15 @@ Page({
         } else if (data.type === 'userLeft') {
           that.addLog(data.message);
         } else if (data.type === 'data') {
-          that.addLog(`${data.message}: ${data.payload}`);
+            if(data.payload.moduleStatus){
+                this.setData({ buttons: data.payload.newButtons});
+
+            }else{
+                this.setData({ buttons: data.payload.newButtons1,startPause: data.payload.startPause});
+            }
+            console.log(data.payload,"我是接收数据");
+            
+          that.addLog(`${data.message}: ${data.payload}我是接收数据`);
         } else if (data.type === 'error') {
           that.addLog(`错误: ${data.message}`);
         } else {
@@ -95,14 +106,25 @@ Page({
 
   // 创建房间
   createRoom() {
-    if (!this.data.connected) {
-      this.connectWebSocket();
-      setTimeout(() => {
-        this.sendMessageToServer({ type: 'create' });
-      }, 500); // 延迟发送，确保连接建立
-    } else {
-      this.sendMessageToServer({ type: 'create' });
+    const app = getApp();
+    const userInfo = app.getGlobalUserInfo();
+    if(userInfo.isScanning){
+        if (!this.data.connected) {
+            this.connectWebSocket();
+            setTimeout(() => {
+              this.sendMessageToServer({ type: 'create' });
+            }, 500); // 延迟发送，确保连接建立
+          } else {
+            this.sendMessageToServer({ type: 'create' });
+          }
+    }else{
+        wx.showToast({
+            title: "蓝牙未连接",
+            icon: "none",
+            duration: 2000,
+        });
     }
+   
   },
 
   // 加入房间
@@ -124,18 +146,18 @@ Page({
   },
 
   // 发送消息
-  sendMessage() {
-    const message = this.data.messageInput;
-    if (!message) {
-      console.log('请输入消息');
-      return;
-    }
+  sendMessage(value:any) {
+    // const message = this.data.messageInput;
+    // if (!message) {
+    //   console.log('请输入消息');
+    //   return;
+    // }
     if (!this.data.connected) {
       console.log('未连接到服务器');
       return;
     }
-    this.sendMessageToServer({ type: 'data', payload: message });
-    this.addLog(`发送消息: ${message}`);
+    this.sendMessageToServer({ type: 'data', payload: value });
+    this.addLog(`发送消息: ${value}`);
     this.setData({ messageInput: '' });
   },
 
@@ -156,11 +178,13 @@ Page({
 
     // 更新 buttons 数组，确保只有一个按钮被选中
     const newButtons = this.data.buttons.map((item, i) => i === Number(index));
+    let data = {newButtons:newButtons,value:value,moduleStatus:true}
     this.setData({ buttons: newButtons });
 
     console.log("选中按钮:", index, "值:", value);
 
     // this.sendData(value)
+    this.sendMessage(data)
 
     // 切换 startPause 状态
     this.setData({
@@ -182,12 +206,16 @@ Page({
           startPause: !this.data.startPause,
           buttons: Array(10).fill(null)
       });
+    let data = {newButtons:newButtons1,value:value,startPause:!this.data.startPause,moduleStatus:false}
+    this.sendMessage(data)
   }else{
       console.log("我是开始",!this.data.startPause);
       this.setData({
         startPause: !this.data.startPause, // 切换 true/false
         buttons: newButtons1
     });
+    let data = {newButtons:newButtons1,value:value,startPause:!this.data.startPause,moduleStatus:false}
+    this.sendMessage(data)
   }
   },
 

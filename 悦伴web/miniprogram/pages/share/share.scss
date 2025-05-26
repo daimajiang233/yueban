@@ -22,8 +22,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, rgba(249,225,233,0.5), rgba(252,226,236,0.5), rgba(255,230,240,0.4));
-  
+  background: linear-gradient(135deg, rgba(249,225,233,1), rgba(252,226,236,1), rgba(255,230,240,1));
   /* 阻止触摸事件穿透 */
   pointer-events: auto; /* 允许自身交互 */
 }
@@ -45,6 +44,12 @@
   // width: 60%;
   width: 500rpx;
   animation: fadeIn 0.8s ease-out;
+
+  
+    .wrap-container-title{
+        font-size: 45rpx;
+        color: rgb(247, 95, 95);
+    }
 
   // 输入框样式
   input[type="text"] {
@@ -70,7 +75,7 @@
   }
 
   // 按钮容器
-  > view:nth-child(2) {
+  > view:nth-child(3) {
     display: flex;
     gap: 40rpx;
     justify-content: center;
@@ -153,6 +158,7 @@
     margin-bottom: 200rpx; /* 与底部的距离，单位可根据需求调整 */
   }
   .start-button {
+    margin-top:100rpx;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -167,8 +173,14 @@
     }
   }
 
-}
 
+}
+.creatInfo{
+    padding:0 60rpx;
+    font-size: 40rpx;
+    text-align: center;
+    color: #787878;
+  }
 
 // 响应式设计
 @media (max-width: 750rpx) { // 小程序以 750rpx 为基准
@@ -177,7 +189,7 @@
     max-width: 90%;
   }
 
-  .creat-wrap > view:nth-child(2) {
+  .creat-wrap > view:nth-child(3) {
     flex-direction: column;
     gap: 30rpx;
   }
@@ -186,4 +198,7 @@
     width: 100%;
     padding: 20rpx;
   }
+}
+.creatStatus{
+    pointer-events: none; /* 禁止所有鼠标/触摸事件 */
 }
