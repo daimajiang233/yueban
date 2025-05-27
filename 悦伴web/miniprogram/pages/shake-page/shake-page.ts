@@ -114,5 +114,8 @@ Page({
   onLoad() {
     // 页面加载时的初始化逻辑
     this.sendData(this.data.vibrationLevel)
+  },
+  onUnload(){
+    this.sendData('0xFC')
   }
 });

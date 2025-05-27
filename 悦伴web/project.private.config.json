@@ -11,7 +11,7 @@
       "list": [
         {
           "name": "pages/share/share",
-          "pathName": "pages/shake-page/shake-page",
+          "pathName": "pages/index/index",
           "query": "",
           "launchMode": "default",
           "scene": null

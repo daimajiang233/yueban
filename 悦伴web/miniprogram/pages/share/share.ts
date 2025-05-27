@@ -10,6 +10,21 @@ Page({
     buttons: new Array(10).fill(false), // 初始化 10 个按钮状态（false 表示未选中）
     startPause: false,
   },
+
+  onShareAppMessage(res) {
+    const customParam = this.data.roomId;
+    return {
+        title: '分享遥控房间',
+        path: `/pages/share/share?param=${customParam}`,
+        success(res) {
+            console.log('分享成功', res);
+        },
+        fail(res) {
+            console.log('分享失败', res);
+        }
+    };
+},
+
   onInput(e:any){
     this.setData({ inputMessage: e.detail.value }); 
     console.log(this.data.inputMessage);
@@ -69,22 +84,35 @@ Page({
             that.setData({creatStatus:false})
           that.addLog(`${data.message}: ${data.roomId}`);
           console.log(`${data.message}: ${data.roomId}`);
+          // that.sendMessage({buttons: that.data.buttons,startPause:that.data.startPause,join:true})
 
         } else if (data.type === 'userJoined') {
           that.addLog(data.message);
+          
         } else if (data.type === 'userLeft') {
           that.addLog(data.message);
         } else if (data.type === 'data') {
             if(data.payload.moduleStatus){
-                this.setData({ buttons: data.payload.newButtons});
+              that.setData({ buttons: data.payload.newButtons});
+              that.sendData(data.payload.value)
 
+            }else if(data.payload.join){
+              // this.setData({ buttons: data.payload.newButtons,startPause:data.payload.startPause});
+              that.setData({ buttons: data.payload.newButtons,startPause: data.payload.startPause});
+              // 昨天注释了这里
+              // that.setData({ buttons: data.payload.newButtons,startPause: data.payload.startPause,roomId:''});
+              that.sendData(data.value)
             }else{
-                this.setData({ buttons: data.payload.newButtons1,startPause: data.payload.startPause});
+              console.log(data.payload.newButtons1);
+              
+              that.setData({ buttons: data.payload.newButtons,startPause: data.payload.startPause});
+              that.sendData(data.payload.value)
             }
             console.log(data.payload,"我是接收数据");
             
           that.addLog(`${data.message}: ${data.payload}我是接收数据`);
-        } else if (data.type === 'error') {
+        } 
+        else if (data.type === 'error') {
           that.addLog(`错误: ${data.message}`);
         } else {
           that.addLog('未知消息: ' + JSON.stringify(data));
@@ -113,7 +141,7 @@ Page({
             this.connectWebSocket();
             setTimeout(() => {
               this.sendMessageToServer({ type: 'create' });
-            }, 500); // 延迟发送，确保连接建立
+            }, 1000); // 延迟发送，确保连接建立
           } else {
             this.sendMessageToServer({ type: 'create' });
           }
@@ -129,19 +157,21 @@ Page({
 
   // 加入房间
   joinRoom() {
+    const that = this
     const roomId = this.data.inputMessage;
     if (!roomId) {
       console.log('请输入房间ID');
       return;
     }
-    if (!this.data.connected) {
-      this.connectWebSocket();
+    if (!that.data.connected) {
+      that.connectWebSocket();
       setTimeout(() => {
-        this.sendMessageToServer({ type: 'join', roomId });
-
-      }, 500);
+        that.sendMessageToServer({ type: 'join', roomId });
+        that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+      }, 1000);
     } else {
-      this.sendMessageToServer({ type: 'join', roomId });
+      that.sendMessageToServer({ type: 'join', roomId });
+      that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})
     }
   },
 
@@ -203,24 +233,104 @@ Page({
       console.log("我是暂停",!this.data.startPause);
 
       this.setData({
-          startPause: !this.data.startPause,
+          startPause: false,
           buttons: Array(10).fill(null)
       });
-    let data = {newButtons:newButtons1,value:value,startPause:!this.data.startPause,moduleStatus:false}
+    let data = {newButtons:Array(10).fill(null),value:value,startPause:false,moduleStatus:false}
     this.sendMessage(data)
   }else{
       console.log("我是开始",!this.data.startPause);
       this.setData({
-        startPause: !this.data.startPause, // 切换 true/false
+        startPause: true, // 切换 true/false
         buttons: newButtons1
     });
-    let data = {newButtons:newButtons1,value:value,startPause:!this.data.startPause,moduleStatus:false}
+    let data = {newButtons:newButtons1,value:value,startPause:true,moduleStatus:false}
     this.sendMessage(data)
   }
   },
 
+  sendData(value: string) {
+    const app = getApp()
+    const userInfo = app.getGlobalUserInfo()
+
+    let state = userInfo.isScanning
+      
+    // 首先要判断下蓝牙的连接状态
+    if (state) {
+        // 判断蓝牙已连接 发送指令
+        const decimalValue = parseInt(value, 16); // 将十六进制转换为十进制
+        const buffer = new ArrayBuffer(2);
+        const dataView = new DataView(buffer);
+        dataView.setUint16(0, decimalValue, true); // 使用转换后的十进制值
+        wx.writeBLECharacteristicValue({
+            deviceId: userInfo.deviceId,
+            serviceId: userInfo.serviceId,
+            characteristicId: userInfo.writeCharacteristicId,
+            value: buffer,
+            success: () => {
+                console.log('远程指令发送成功');
+                // this.enableNotifications(); // 发送指令后启用通知
+            },
+            fail: (res) => {
+               console.log("远程指令发送失败");
+               
+            }
+        });
+
+    } else {
+        wx.showToast({
+            title: "蓝牙未连接",
+            icon: "error",
+            duration: 2000,
+        });
+    }
+},
+
+// onShareAppMessage(res:any) {
+//   const customParam = this.data.roomId; // 获取要分享的参数
+//       return {
+//           title: '分享遥控房间', // 分享标题
+//           path: `/pages/share/share?param=${customParam}`, // 分享路径，附加参数
+//           // imageUrl: 'https://your-domain.com/share-image.jpg', // 分享图片（可选）
+//           success: function (res:any) {
+//               console.log('分享成功', res);
+//           },
+//           fail: function (res:any) {
+//               console.log('分享失败', res);
+//       }
+//   };
+// },
+shareRoom(){
+  // 微信在控制
+//   wx.showShareMenu({
+//     withShareTicket: true, // 是否显示转发到群聊的分享票据
+//     menus: ['shareAppMessage'], // 启用分享到朋友和朋友圈
+//     success: () => {
+//         console.log('显示分享菜单成功');
+//     }
+// });
+},
+
   // 页面加载时初始化并创建房间
-  onLoad() {
+  onLoad(options) {
+    let param = options.param
+    if (param) {
+      const that = this
+      that.setData({
+        roomId: options.param // 将参数存入 data
+      });
+      if (!that.data.connected) {
+        that.connectWebSocket();
+        setTimeout(() => {
+          that.sendMessageToServer({ type: 'join', param });
+          that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+        }, 1000);
+      } else {
+        that.sendMessageToServer({ type: 'join', param });
+        that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+      }
+  }
+
     // this.connectWebSocket();
     // setTimeout(() => {
     //   this.createRoom();
@@ -230,7 +340,17 @@ Page({
   // 页面卸载时关闭 WebSocket
   onUnload() {
     if (this.data.connected) {
-      wx.closeSocket();
+      this.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+      console.log("已经关闭websocket");
+      wx.showToast({
+        title: "蓝牙未连接",
+        icon: "error",
+        duration: 2000,
+    });
+      setTimeout(()=>{
+        this.data.connected = false
+          wx.closeSocket();
+      },2000)
     }
   },
 });

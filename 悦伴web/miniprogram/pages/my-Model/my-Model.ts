@@ -7,7 +7,22 @@ Page({
         startPause: false,
         buttons: new Array(10).fill(false) // 初始化 10 个按钮状态（false 表示未选中）
     },
+    // 页面加载初始化获取全局数据
+    dataInit(){
+      const app = getApp()
+      const userInfo = app.getGlobalUserInfo()
+      this.setData({
+        startPause:  userInfo.modelInfo.startPause,
+        buttons:  userInfo.modelInfo.buttons // 初始化 10 个按钮状态（false 表示未选中）
+      })
+      console.log(this.data.startPause);
+      
+
+    },
+
     handleButtonTap(e: any) {
+        const app = getApp()
+        const userInfo = app.getGlobalUserInfo()
         const index = e.detail.index; // 从子组件传递的 index
         const value = e.detail.value; // 从子组件传递的 value
 
@@ -23,14 +38,13 @@ Page({
         this.setData({
             startPause: true, // 切换 true/false
         });
-
+        userInfo.modelInfo.buttons = newButtons
+        userInfo.modelInfo.startPause = true
         console.log(1);
     },
 
     // 组件被添加到页面时
     sendData(value: string) {
-
-
         const app = getApp()
         const userInfo = app.getGlobalUserInfo()
 
@@ -75,6 +89,8 @@ Page({
 
     // methods: {
     startBtn(e: any) {
+      const app = getApp()
+      const userInfo = app.getGlobalUserInfo()
         let newButtons1 = this.data.buttons.map((item, i) => i === Number(0));
         console.log(newButtons1,'数据');
         
@@ -84,18 +100,22 @@ Page({
             console.log("我是暂停",!this.data.startPause);
 
             this.setData({
-                startPause: !this.data.startPause,
+                startPause: false,
                 buttons: Array(10).fill(null)
             });
+            userInfo.modelInfo.buttons = Array(10).fill(null)
+            userInfo.modelInfo.startPause = false
         }else{
             console.log("我是开始",!this.data.startPause);
 
             // this.setData({ buttons: newButtons });
             // 切换 startPause 状态
             this.setData({
-                startPause: !this.data.startPause, // 切换 true/false
+                startPause: true, // 切换 true/false
                 buttons: newButtons1
             });
+            userInfo.modelInfo.buttons = newButtons1
+            userInfo.modelInfo.startPause = true
         }
 
         console.log(value, "startBtn triggered");
@@ -109,6 +129,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad() {
+      this.dataInit()
     },
 
     /**
@@ -136,7 +157,6 @@ Page({
      * 生命周期函数--监听页面卸载
      */
     onUnload() {
-
     },
 
     /**

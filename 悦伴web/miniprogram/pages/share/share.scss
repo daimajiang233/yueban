@@ -141,8 +141,12 @@
 .body-wrapper{
   display: flex;
   flex-direction: column;
+  padding: 0 20rpx;
+  .roomID{
   padding: 0 10rpx;
 
+  }
+  
   .button-wrapper {
     flex-wrap: wrap; /* 允许换行 */
     width: 100%;
@@ -201,4 +205,29 @@
 }
 .creatStatus{
     pointer-events: none; /* 禁止所有鼠标/触摸事件 */
+    // background-color: rgb(228, 220, 220);
+}
+
+.room-id{
+  display: flex;
+  justify-content: space-between;
+  // background-color: red;
+  align-items: center;
+}
+.room-id text{
+  font-size: 40rpx;
+  color: pink;
+}
+.share-room{
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #ffccd5, #ff80ab);;
+  font-size: 40rpx;
+  color: white;
+  width: 250rpx;
+  height: 80rpx;
+  // border: 2px solid rgb(250, 137, 137);
+  border-radius: 30rpx;
 }

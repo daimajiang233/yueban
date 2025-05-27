@@ -9,6 +9,7 @@ interface UserInfo {
     rssi?: number;
     advertisData?: string;
     foundTime?: string;
+    modelInfo:object
 }
 
 // 定义 IAppOption 接口，明确 globalData 的结构
