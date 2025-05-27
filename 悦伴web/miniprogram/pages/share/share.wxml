@@ -13,6 +13,12 @@
 </view>
 <view>
 <!-- 主体部分 -->
+<view>
+  <view class="room-id">
+    <text>房间ID：{{roomId}}</text>
+    <button class="share-room"  bindtap="shareRoom" open-type="share" wx:if="{{creatStatus}}">分享房间</button>
+  </view>
+</view>
 <view class="body-wrapper {{creatStatus?'creatStatus':''}}">
   <view  class="button-wrapper">
     <button-component text="温婉" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="0" className="wenwan {{buttons[0] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf1"></button-component>
@@ -33,6 +39,5 @@
     </view>
 </view>
     <view class="creatInfo" wx:if="{{creatStatus}}">设备已进入被远程遥控模式，目前暂无法点击，返回即可断开遥控</view>
-  1
 </view>
-<text>{{roomId}}</text>
+<!-- <text>{{roomId}}</text> -->

@@ -10,6 +10,21 @@ Page({
     buttons: new Array(10).fill(false), // 初始化 10 个按钮状态（false 表示未选中）
     startPause: false,
   },
+
+  onShareAppMessage(res) {
+    const customParam = this.data.roomId;
+    return {
+        title: '分享遥控房间',
+        path: `/pages/share/share?param=${customParam}`,
+        success(res) {
+            console.log('分享成功', res);
+        },
+        fail(res) {
+            console.log('分享失败', res);
+        }
+    };
+},
+
   onInput(e:any){
     this.setData({ inputMessage: e.detail.value }); 
     console.log(this.data.inputMessage);
@@ -83,7 +98,9 @@ Page({
 
             }else if(data.payload.join){
               // this.setData({ buttons: data.payload.newButtons,startPause:data.payload.startPause});
-              that.setData({ buttons: data.payload.newButtons,startPause: data.payload.startPause,roomId:''});
+              that.setData({ buttons: data.payload.newButtons,startPause: data.payload.startPause});
+              // 昨天注释了这里
+              // that.setData({ buttons: data.payload.newButtons,startPause: data.payload.startPause,roomId:''});
               that.sendData(data.value)
             }else{
               console.log(data.payload.newButtons1);
@@ -150,11 +167,11 @@ Page({
       that.connectWebSocket();
       setTimeout(() => {
         that.sendMessageToServer({ type: 'join', roomId });
-        // that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+        that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
       }, 1000);
     } else {
       that.sendMessageToServer({ type: 'join', roomId });
-      that.sendMessage({buttons: this.data.buttons.map((item, i) => i === Number(0)),startPause:that.data.startPause,join:true})
+      that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})
     }
   },
 
@@ -269,8 +286,51 @@ Page({
     }
 },
 
+// onShareAppMessage(res:any) {
+//   const customParam = this.data.roomId; // 获取要分享的参数
+//       return {
+//           title: '分享遥控房间', // 分享标题
+//           path: `/pages/share/share?param=${customParam}`, // 分享路径，附加参数
+//           // imageUrl: 'https://your-domain.com/share-image.jpg', // 分享图片（可选）
+//           success: function (res:any) {
+//               console.log('分享成功', res);
+//           },
+//           fail: function (res:any) {
+//               console.log('分享失败', res);
+//       }
+//   };
+// },
+shareRoom(){
+  // 微信在控制
+//   wx.showShareMenu({
+//     withShareTicket: true, // 是否显示转发到群聊的分享票据
+//     menus: ['shareAppMessage'], // 启用分享到朋友和朋友圈
+//     success: () => {
+//         console.log('显示分享菜单成功');
+//     }
+// });
+},
+
   // 页面加载时初始化并创建房间
-  onLoad() {
+  onLoad(options) {
+    let param = options.param
+    if (param) {
+      const that = this
+      that.setData({
+        roomId: options.param // 将参数存入 data
+      });
+      if (!that.data.connected) {
+        that.connectWebSocket();
+        setTimeout(() => {
+          that.sendMessageToServer({ type: 'join', param });
+          that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+        }, 1000);
+      } else {
+        that.sendMessageToServer({ type: 'join', param });
+        that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+      }
+  }
+
     // this.connectWebSocket();
     // setTimeout(() => {
     //   this.createRoom();

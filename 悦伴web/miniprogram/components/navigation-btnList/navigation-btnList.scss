@@ -26,7 +26,7 @@ $shadow-color: rgba(0, 0, 0, 0.1); /* 阴影颜色 */
   height: $card-height;
   position: relative; /* 用于粉色边框定位 */
   width: 700rpx; /* 占据大部分屏幕宽度 */
-  margin: 20rpx auto; /* 上下边距居中 */
+  margin: 50rpx auto; /* 上下边距居中 */
   /* 左侧粉色边框 */
   &::before {
     content: '';
