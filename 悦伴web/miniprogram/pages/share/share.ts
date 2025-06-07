@@ -52,7 +52,7 @@ Page({
   connectWebSocket() {
     const that = this;
     wx.connectSocket({
-      url: 'ws://114.55.39.240:3000', // 替换为你的服务器地址，生产环境用 wss://
+      url: 'wss://www.nick9995403432.com.cn', // 替换为你的服务器地址，生产环境用 wss://
       success() {
         that.addLog('正在连接服务器...');
         console.log('正在连接服务器...');
@@ -314,17 +314,21 @@ shareRoom(){
   // 页面加载时初始化并创建房间
   onLoad(options) {
     let param = options.param
+    // this.setData({
+    //     testData:param
+    // })
     if (param) {
       const that = this
       that.setData({
-        roomId: options.param // 将参数存入 data
+        roomId: param, // 将参数存入 data
+        creatStatus:false,
       });
       if (!that.data.connected) {
-        that.connectWebSocket();
-        setTimeout(() => {
-          that.sendMessageToServer({ type: 'join', param });
-          that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
-        }, 1000);
+            that.connectWebSocket();
+            setTimeout(() => {
+            that.sendMessageToServer({ type: 'join', param });
+            that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+            }, 1000);
       } else {
         that.sendMessageToServer({ type: 'join', param });
         that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})

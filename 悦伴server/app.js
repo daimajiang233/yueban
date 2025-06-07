@@ -17,7 +17,7 @@ function generateShortId() {
   return letterPart + numberPart; // 形如 YM0527
 }
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 3000 });
 const rooms = new Map(); // 存储房间信息 {roomId: [ws1, ws2]}
 const roomTimeouts = new Map(); // 存储房间的关闭定时器
 
@@ -172,4 +172,4 @@ wss.on('connection', (ws) => {
   });
 });
 
-console.log('WebSocket server running on ws://localhost:8080');
+console.log('WebSocket server running on ws://localhost:3000');

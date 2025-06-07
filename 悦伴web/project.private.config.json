@@ -5,13 +5,13 @@
     "compileHotReLoad": true,
     "urlCheck": false
   },
-  "libVersion": "3.8.5",
+  "libVersion": "3.8.7",
   "condition": {
     "miniprogram": {
       "list": [
         {
           "name": "pages/share/share",
-          "pathName": "pages/index/index",
+          "pathName": "pages/share/share",
           "query": "",
           "launchMode": "default",
           "scene": null
