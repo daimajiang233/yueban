@@ -9,6 +9,8 @@ Page({
     connected: false, // 连接状态
     buttons: new Array(10).fill(false), // 初始化 10 个按钮状态（false 表示未选中）
     startPause: false,
+    // -----------------------------测试数据----------------------------
+    // connectedText:false
   },
 
   onShareAppMessage(res) {
@@ -56,17 +58,18 @@ Page({
       success() {
         that.addLog('正在连接服务器...');
         console.log('正在连接服务器...');
+        // that.setData({ connectedText: true });
+        // 监听 WebSocket 事件
+        wx.onSocketOpen(() => {
+            that.setData({ connected: true });
+            that.addLog('已连接到服务器');
+            console.log('已连接到服务器');
+        });
       },
       fail(err) {
         that.addLog('连接失败: ' + JSON.stringify(err));
+        // that.setData({ connectedText: false });
       },
-    });
-
-    // 监听 WebSocket 事件
-    wx.onSocketOpen(() => {
-      that.setData({ connected: true });
-      that.addLog('已连接到服务器');
-      console.log('已连接到服务器');
     });
 
     wx.onSocketMessage((res) => {
@@ -158,7 +161,7 @@ Page({
   // 加入房间
   joinRoom() {
     const that = this
-    const roomId = this.data.inputMessage;
+    const roomId = that.data.inputMessage;
     if (!roomId) {
       console.log('请输入房间ID');
       return;
@@ -195,7 +198,13 @@ Page({
   sendMessageToServer(data) {
     wx.sendSocketMessage({
       data: JSON.stringify(data),
-      success() {},
+      success(){
+        //   wx.showToast({
+        //     title: "远程指令发送成功",
+        //     icon: "success",
+        //     duration: 2000,
+        //   })
+      },
       fail(err) {
         this.addLog('发送失败: ' + JSON.stringify(err));
       },
@@ -311,6 +320,12 @@ shareRoom(){
 // });
 },
 
+   // 页面初次渲染完成时
+    onReady(){
+    //   const that = this
+    //   let param = that.data.roomId
+        
+    },
   // 页面加载时初始化并创建房间
   onLoad(options) {
     let param = options.param
@@ -322,23 +337,38 @@ shareRoom(){
       that.setData({
         roomId: param, // 将参数存入 data
         creatStatus:false,
+        inputMessage: param
       });
-      if (!that.data.connected) {
-            that.connectWebSocket();
-            setTimeout(() => {
-            that.sendMessageToServer({ type: 'join', param });
-            that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
-            }, 1000);
-      } else {
-        that.sendMessageToServer({ type: 'join', param });
-        that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})
-      }
-  }
+    //   wx.showModal({
+    //     title: '提示',
+    //     content: `您确定要远程连接${param}吗？`,
+    //     cancelText: '取消', // 取消按钮文字
+    //     confirmText: '确认',
+    //     success(res) {
+    //         if (res.confirm) {
+    //           // 用户点击了确认
+    //           wx.showToast({ title: '已确认', icon: 'success' });
+    //             if (!that.data.connected) {
+    //                     that.connectWebSocket();
+    //                     setTimeout(() => {
+    //                     that.sendMessageToServer({ type: 'join', param });
+    //                     that.sendMessage({buttons: Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+    //                     }, 1000);
+    //             } else {
+    //                 that.sendMessageToServer({ type: 'join', param });
+    //                 that.sendMessage({buttons:Array(10).fill(null),startPause:false,value:'0xfB',join:true})
+    //             }
+    //         } else if (res.cancel) {
+    //           // 用户点击了取消
+    //           wx.showToast({ title: '已取消', icon: 'none' });
+    //         }
+    //       },
+    //       fail(err) {
+    //         console.error('弹窗调用失败', err);
+    //       }
+    //   })
+    }
 
-    // this.connectWebSocket();
-    // setTimeout(() => {
-    //   this.createRoom();
-    // }, 500); // 延迟调用 createRoom，确保 WebSocket 连接建立
   },
 
   // 页面卸载时关闭 WebSocket

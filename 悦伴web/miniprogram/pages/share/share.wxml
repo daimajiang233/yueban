@@ -1,12 +1,12 @@
 <!--pages/share/share.wxml-->
 <!-- 弹窗部分 -->
-<view class="wrap-container" wx:if="{{!roomId}}">
+<view class="wrap-container" wx:if="{{!connected}}">
   <view class="creat-wrap">
     <view class="wrap-container-title">远程遥控</view>
     <view><input type="text" placeholder="输入房间id"  value="{{inputMessage}}" bindinput="onInput" /></view>
     <view>
       <view class='{{inputMessage?"join-btn":"ceart-btn"}}' bindtap="joinRoom">加入房间</view>
-      <view class='{{inputMessage?"ceart-btn":"join-btn"}}' bindtap="createRoom">创建房间</view>
+      <view wx:if="{{!roomId}}" class='{{inputMessage?"ceart-btn":"join-btn"}}' bindtap="createRoom">创建房间</view>
     </view>
 
   </view>
