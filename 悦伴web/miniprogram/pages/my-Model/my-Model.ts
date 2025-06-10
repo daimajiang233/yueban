@@ -45,6 +45,7 @@ Page({
 
     // 组件被添加到页面时
     sendData(value: string) {
+        wx.vibrateShort({ type: 'heavy' });
         const app = getApp()
         const userInfo = app.getGlobalUserInfo()
 

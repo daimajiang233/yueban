@@ -5,7 +5,7 @@
             <view class="tip">小程序的“我的模式”和“摇一摇”功能需要蓝牙连接才能使用，请确保手机的蓝牙为打开状态。部分机型还需要打开定位，并给微信定位权限。</view>
             <view class="function-item">
                 <view class="function-title">1. 智能连接</view>
-                <view class="function-desc">开启玩具，连接蓝牙，主页左上角显示蓝牙未连接时，可以点击它，进入蓝牙连接界面，程序会自动搜索附近的处于待连接状态蓝牙手机及玩具。</view>
+                <view class="function-desc">开启玩具，连接蓝牙，主页左上角显示蓝牙未连接时，可以点击按钮，进行蓝牙连接，程序会自动搜索附近的处于待连接状态的玩具。</view>
             </view>
             <view class="function-item">
                 <view class="function-title">2. 断开连接</view>
@@ -27,7 +27,7 @@
             </view>
             <view class="function-item">
                 <view class="function-title">3. 摇一摇</view>
-                <view class="function-desc">点击主页中的摇一摇按钮，即可进入摇一摇页面，通过摇动手机控制震动大小。</view>
+                <view class="function-desc">点击主页中的摇一摇按钮，即可进入摇一摇页面，通过滑动进度条控制震动大小。</view>
             </view>
             <!-- <view class="function-item">
                 <view class="function-title">4. 智能加温（仅加温款有此功能）</view>
@@ -35,7 +35,7 @@
             </view> -->
             <view class="function-item">
                 <view class="function-title">3. 分享遥控</view>
-                <view class="function-desc">如果已经通过蓝牙连接玩具，或者已经接受并进入过别人分享的遥控，那么点击主页的分享遥控按钮，即可分享遥控给好友，那么好友点击分享的连接则会直接进入我的模式页面(好友不需要连接设备)。</view>
+                <view class="function-desc">如果已经通过蓝牙连接玩具，即可点击远程按钮创建房间进入远程页面，点击页面的分享房间按钮，即可分享遥控给好友，好友点击分享的连接则会直接进入我的遥控模式页面(好友不需要连接设备)。</view>
             </view>
             <view class="function-item">
                 <view class="function-title">5. 使用教程</view>
@@ -47,6 +47,6 @@
             </view>-->
         </view> 
     </view>
-        <view class="notice">注意: 小程序切换到系统后台会被中断网络连接，导致好友无法正常遥控，在使用中请勿切入后台。</view>
+        <view class="notice">注意: 小程序返回或者切换到系统后台会被中断网络连接，导致好友无法正常遥控，在使用中请勿切入后台，如果点击了返回就需要重新创建分享页面。</view>
         <view class="end">END: 非常感谢您使用本产品，期待与您再次相遇。</view>
 </view>

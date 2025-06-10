@@ -226,9 +226,9 @@ Page({
     },
 
     startBtn(e: any) {
+        wx.vibrateShort({ type: 'heavy' });
         let newButtons1 = this.data.buttons.map((item, i) => i === Number(0));
         console.log(newButtons1, '数据');
-
         const value = e.currentTarget.dataset.value; // 获取 data-value="0xfB"
         console.log(value, '测试开关键数据');
         if (this.data.startPause) {
@@ -324,6 +324,12 @@ Page({
 
     // 页面卸载时关闭 WebSocket
     onUnload() {
+      if (this.data.creatStatus) {
+        setTimeout(() => {
+                this.data.connected = false
+                wx.closeSocket();
+        }, 2000)
+      }
         // if (this.data.connected) {
             // this.sendMessage({ buttons: Array(10).fill(null), startPause: false, value: '0xfB', join: true })
             // console.log("已经关闭websocket");
