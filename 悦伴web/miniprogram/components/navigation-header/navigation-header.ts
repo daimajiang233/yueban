@@ -41,7 +41,7 @@ Component({
             let isScanning = this.data.isScanning
             if(isScanning){
                 this.stopBluetoothProcess().then(() => {
-                    this.startBluetoothProcess(); // 重新启动蓝牙流程
+                    // this.startBluetoothProcess(); // 重新启动蓝牙流程
                 });
             }else{
                 this.startBluetoothProcess();
@@ -292,7 +292,8 @@ Component({
                         userInfo.isScanning = true;
                         console.log(`成功连接到设备: ${id}`, res);
                         this.setData({ isScanning: true, status: `已连接到设备 ${id}` });
-            
+                        // 连接成功后启动定时器，每秒发送0xFF检测连接状态
+                        this.startConnectionCheckTimer();
                         resolve(true);
                     },
                     fail: (err) => {
@@ -439,18 +440,13 @@ Component({
                         
                         if (isConnected) {
                             console.log('设备仍然连接:', this.data.name);
-                            this.setData({isScanning: false, status: '连接正常' });
+                            this.setData({isScanning: true, status: '连接正常' });
                             userInfo.isScanning= true
             
                         } else {
                             console.log('设备已断开连接:', this.data.name);
                             // this.setData({ isScanning: false, status: '连接已断开' });
-                        //   userInfo.isScanning= false
-            
-                            // 清除定时器
-                            clearInterval(timerId);
-                            // this.setData({ timerId: null });
-                            
+                            //   userInfo.isScanning= false
                             // 更新全局状态
                             userInfo.isScanning = false;
                             
@@ -462,6 +458,11 @@ Component({
                                 characteristicId: '', 
                                 status: '蓝牙已断开设备连接' 
                             });
+            
+                            // 清除定时器
+                            clearInterval(timerId);
+                            // this.setData({ timerId: null });
+                            
                         }
                     },
                     fail: (err) => {
