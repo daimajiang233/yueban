@@ -59,7 +59,8 @@ wss.on('connection', (ws) => {
         return;
       }
       const room = rooms.get(roomId);
-      if (room.length >= 2) {
+    //   限制房间最大人数
+      if (room.length >= 2000) {
         ws.send(JSON.stringify({ 
           type: 'error', 
           message: 'Room is full' 

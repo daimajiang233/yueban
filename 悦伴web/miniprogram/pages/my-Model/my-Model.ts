@@ -95,7 +95,8 @@ Page({
         console.log(newButtons1,'数据');
         
         const value = e.currentTarget.dataset.value; // 获取 data-value="0xf0B"
-
+        console.log(value,'测试开关键数据');
+        
         if(this.data.startPause){
             console.log("我是暂停",!this.data.startPause);
 
