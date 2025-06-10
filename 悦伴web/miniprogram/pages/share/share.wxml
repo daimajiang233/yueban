@@ -1,43 +1,46 @@
 <!--pages/share/share.wxml-->
 <!-- 弹窗部分 -->
-<view class="wrap-container" wx:if="{{!roomId}}">
-  <view class="creat-wrap">
-    <view class="wrap-container-title">远程遥控</view>
-    <view><input type="text" placeholder="输入房间id"  value="{{inputMessage}}" bindinput="onInput" /></view>
-    <view>
-      <view class='{{inputMessage?"join-btn":"ceart-btn"}}' bindtap="joinRoom">加入房间</view>
-      <view class='{{inputMessage?"ceart-btn":"join-btn"}}' bindtap="createRoom">创建房间</view>
-    </view>
+<view class="wrap-container" wx:if="{{!connected}}">
+    <view class="creat-wrap">
+        <view class="wrap-container-title">远程遥控</view>
+        <view><input type="text" placeholder="输入房间id" value="{{inputMessage}}" bindinput="onInput" /></view>
+        <view>
+            <view class='{{inputMessage?"join-btn":"ceart-btn"}}' bindtap="joinRoom">加入房间</view>
+            <view wx:if="{{!roomId}}" class='{{inputMessage?"ceart-btn":"join-btn"}}' bindtap="createRoom">创建房间</view>
+        </view>
 
-  </view>
+    </view>
 </view>
 <view>
-<!-- 主体部分 -->
-<view>
-  <view class="room-id">
-    <text>房间ID：{{roomId}}</text>
-    <button class="share-room"  bindtap="shareRoom" open-type="share" wx:if="{{creatStatus}}">分享房间</button>
-  </view>
-</view>
-<view class="body-wrapper {{creatStatus?'creatStatus':''}}">
-  <view  class="button-wrapper">
-    <button-component text="温婉" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="0" className="wenwan {{buttons[0] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf1"></button-component>
-    <button-component text="触感" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20144.png" index="1" className="chugan {{buttons[1] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf2"></button-component>
-    <button-component text="轻语" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20138.png" index="2" className="qingyu {{buttons[2] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf3"></button-component>
-    <button-component text="宇宙" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20143.png" index="3" className="yuzhou {{buttons[3] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf4"></button-component>
-    <button-component text="星海" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20141.png" index="4" className="xinghai {{buttons[4] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf5"></button-component>
-    <button-component text="季风" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20140.png" index="5" className="jifeng {{buttons[5] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf6"></button-component>
-    <button-component text="震撼" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20136.png" index="6" className="zhenhan {{buttons[6] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf7"></button-component>
-    <button-component text="纵横" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20142.png" index="7" className="zongheng {{buttons[7] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf8"></button-component>
-    <button-component text="微享" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20139.png" index="8" className="weixiang {{buttons[8] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf9"></button-component>
-    <button-component text="银河" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20137.png" index="9" className="yinhe {{buttons[9] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xfA"></button-component>
-  </view>
-  <view class="start-button-wrapper" bindtap="startBtn" data-value="0xfB ">
-        <view class="start-button">
-            <text>{{startPause?"|| 暂停玩具":"▶ 开启玩具"}}</text>
+    <!-- 主体部分 -->
+    <view>
+        <view class="room-id">
+            <text>房间ID：{{roomId}}</text>
+            <button class="share-room" bindtap="shareRoom" open-type="share" wx:if="{{creatStatus}}">分享房间</button>
         </view>
     </view>
-</view>
-    <view class="creatInfo" wx:if="{{creatStatus}}">设备已进入被远程遥控模式，目前暂无法点击，返回即可断开遥控</view>
+    <!-- <view class="body-wrapper {{creatStatus?'creatStatus':''}}"> -->
+        <view class="body-wrapper">
+            <view class="button-wrapper">
+                <button-component text="温婉" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20145.png" index="0" className="wenwan {{buttons[0] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf1"></button-component>
+                <button-component text="触感" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20144.png" index="1" className="chugan {{buttons[1] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf2"></button-component>
+                <button-component text="轻语" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20138.png" index="2" className="qingyu {{buttons[2] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf3"></button-component>
+                <button-component text="宇宙" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20143.png" index="3" className="yuzhou {{buttons[3] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf4"></button-component>
+                <button-component text="星海" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20141.png" index="4" className="xinghai {{buttons[4] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf5"></button-component>
+                <button-component text="季风" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20140.png" index="5" className="jifeng {{buttons[5] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf6"></button-component>
+                <button-component text="震撼" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20136.png" index="6" className="zhenhan {{buttons[6] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf7"></button-component>
+                <button-component text="纵横" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20142.png" index="7" className="zongheng {{buttons[7] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf8"></button-component>
+                <button-component text="微享" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20139.png" index="8" className="weixiang {{buttons[8] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xf9"></button-component>
+                <button-component text="银河" icon="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20137.png" index="9" className="yinhe {{buttons[9] ? 'button-clicked2' : ''}}" bind:buttonTap="handleButtonTap" value="0xfA"></button-component>
+            </view>
+            <view class="start-button-wrapper" bindtap="startBtn" data-value="0xfB">
+                <view class="start-button">
+                    <text>{{startPause?"|| 暂停玩具":"▶ 开启玩具"}}</text>
+                </view>
+            </view>
+        </view>
+    <!-- </view> -->
+    
+    <view class="creatInfo">设备已进入被远程遥控模式，返回即可断开遥控</view>
 </view>
 <!-- <text>{{roomId}}</text> -->
