@@ -229,18 +229,21 @@ Page({
         wx.vibrateShort({ type: 'heavy' });
         let newButtons1 = this.data.buttons.map((item, i) => i === Number(0));
         console.log(newButtons1, '数据');
-        const value = e.currentTarget.dataset.value; // 获取 data-value="0xfB"
-        console.log(value, '测试开关键数据');
+        // const value = e.currentTarget.dataset.value; // 获取 data-value="0xfB"
+        // 修改发码参数
+        const valueStart = "0xFB"
+        const valueEnd = "0xFD"
+        console.log(valueStart,valueEnd, '测试开关键数据');
         if (this.data.startPause) {
             console.log("我是暂停", !this.data.startPause);
             this.setData({
                 startPause: false,
                 buttons: Array(10).fill(null)
             });
-            let data = { newButtons: Array(10).fill(null), value: value, startPause: false, moduleStatus: false }
+            let data = { newButtons: Array(10).fill(null), value: valueEnd, startPause: false, moduleStatus: false }
             let data1 = { newButtons: Array(10).fill(null), value: null, startPause: false, moduleStatus: false }
             if (this.data.creatStatus) {
-                this.sendData(value)
+                this.sendData(valueEnd)
                 this.sendMessage(data1)
             } else {
                 this.sendMessage(data)
@@ -251,11 +254,11 @@ Page({
                 startPause: true, // 切换 true/false
                 buttons: newButtons1
             });
-            let data = { newButtons: newButtons1, value: value, startPause: true, moduleStatus: false }
+            let data = { newButtons: newButtons1, value: valueStart, startPause: true, moduleStatus: false }
             let data1 = { newButtons: newButtons1, value: null, startPause: true, moduleStatus: false }
 
             if (this.data.creatStatus) {
-                this.sendData(value)
+                this.sendData(valueStart)
                 this.sendMessage(data1)
             } else {
                 this.sendMessage(data)
@@ -266,7 +269,8 @@ Page({
     sendData(value: string) {
         const app = getApp()
         const userInfo = app.getGlobalUserInfo()
-
+        console.log(value,"蓝牙已准备发送的数据");
+        
         let state = userInfo.isScanning
 
         // 首先要判断下蓝牙的连接状态
