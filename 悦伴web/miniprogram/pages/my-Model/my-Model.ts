@@ -95,8 +95,10 @@ Page({
         let newButtons1 = this.data.buttons.map((item, i) => i === Number(0));
         console.log(newButtons1,'数据');
         
-        const value = e.currentTarget.dataset.value; // 获取 data-value="0xf0B"
-        console.log(value,'测试开关键数据');
+        // const value = e.currentTarget.dataset.value; // 获取 data-value="0xf0B"
+        const valueStart = "0xFB"
+        const valueEnd = "0xFD"
+        console.log(valueStart,valueEnd,'测试开关键数据');
         
         if(this.data.startPause){
             console.log("我是暂停",!this.data.startPause);
@@ -107,6 +109,8 @@ Page({
             });
             userInfo.modelInfo.buttons = Array(10).fill(null)
             userInfo.modelInfo.startPause = false
+            // 调用 sendData 发送蓝牙指令
+            this.sendData(valueEnd);
         }else{
             console.log("我是开始",!this.data.startPause);
 
@@ -118,12 +122,9 @@ Page({
             });
             userInfo.modelInfo.buttons = newButtons1
             userInfo.modelInfo.startPause = true
+            // 调用 sendData 发送蓝牙指令
+            this.sendData(valueStart);
         }
-
-        console.log(value, "startBtn triggered");
-
-        // 调用 sendData 发送蓝牙指令
-        this.sendData(value);
 
     },
     // },
