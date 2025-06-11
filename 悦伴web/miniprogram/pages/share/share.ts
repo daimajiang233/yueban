@@ -97,14 +97,14 @@ Page({
                 } else if (data.type === 'data') {
                     if (data.payload.moduleStatus) {
                         that.setData({ buttons: data.payload.newButtons,startPause:data.payload.startPause });
-                        if(data.payload.value){
+                        if(data.payload.value && this.data.creatStatus){
                             that.sendData(data.payload.value)
                         }
                     }else {
                         console.log(data.payload.newButtons, "我是开关测试数据接收", data.payload.value);
 
                         that.setData({ buttons: data.payload.newButtons, startPause: data.payload.startPause });
-                        if(data.payload.value){
+                        if(data.payload.value && this.data.creatStatus){
                             that.sendData(data.payload.value)
                         }
                     }
