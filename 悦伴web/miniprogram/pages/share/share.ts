@@ -9,8 +9,6 @@ Page({
         connected: false, // 连接状态
         buttons: new Array(10).fill(false), // 初始化 10 个按钮状态（false 表示未选中）
         startPause: false,
-        // -----------------------------测试数据----------------------------
-        // connectedText:false
     },
 
     onShareAppMessage(res) {
@@ -30,7 +28,6 @@ Page({
     onInput(e: any) {
         this.setData({ inputMessage: e.detail.value });
         console.log(this.data.inputMessage);
-
     },
 
     // 输入房间ID
@@ -50,101 +47,101 @@ Page({
         this.setData({ logs });
     },
 
-    // 初始化 WebSocket 连接
+    // 初始化 WebSocket 连接 (返回 Promise)
     connectWebSocket() {
-        const that = this;
-        wx.connectSocket({
-            url: 'wss://www.nick9995403432.com.cn', // 替换为你的服务器地址，生产环境用 wss://
-            success() {
-                that.addLog('正在连接服务器...');
-                console.log('正在连接服务器...');
-                // that.setData({ connectedText: true });
-                // 监听 WebSocket 事件
-                wx.onSocketOpen(() => {
-                    that.setData({ connected: true });
-                    that.addLog('已连接到服务器');
-                    console.log('已连接到服务器');
-                });
-            },
-            fail(err) {
-                that.addLog('连接失败: ' + JSON.stringify(err));
-                // that.setData({ connectedText: false });
-            },
-        });
+        return new Promise((resolve, reject) => {
+            const that = this;
+            wx.connectSocket({
+                url: 'wss://www.nick9995403432.com.cn',
+                success() {
+                    that.addLog('正在连接服务器...');
+                    console.log('正在连接服务器...');
+                    
+                    // 监听 WebSocket 事件
+                    wx.onSocketOpen(() => {
+                        that.setData({ connected: true });
+                        that.addLog('已连接到服务器');
+                        console.log('已连接到服务器');
+                        resolve();
+                    });
+                },
+                fail(err) {
+                    that.addLog('连接失败: ' + JSON.stringify(err));
+                    reject(err);
+                },
+            });
 
-        wx.onSocketMessage((res) => {
-            try {
-                const data = JSON.parse(res.data);
-                // 根据消息类型处理并显示 message 字段
-                if (data.type === 'roomCreated') {
-                    that.setData({ roomId: data.roomId })
-                    that.setData({ creatStatus: true })
-                    that.addLog(`${data.message}: ${data.roomId}`);
-                    console.log(`${data.message}: ${data.roomId}`);
-
-                } else if (data.type === 'joined') {
-                    that.setData({ roomId: data.roomId })
-                    that.setData({ creatStatus: false })
-                    that.addLog(`${data.message}: ${data.roomId}`);
-                    console.log(`${data.message}: ${data.roomId}`);
-                    // that.sendMessage({buttons: that.data.buttons,startPause:that.data.startPause,join:true})
-
-                } else if (data.type === 'userJoined') {
-                    that.addLog(data.message);
-
-                } else if (data.type === 'userLeft') {
-                    that.addLog(data.message);
-                } else if (data.type === 'data') {
-                    if (data.payload.moduleStatus) {
-                        that.setData({ buttons: data.payload.newButtons,startPause:data.payload.startPause });
-                        if(data.payload.value){
-                            that.sendData(data.payload.value)
+            wx.onSocketMessage((res) => {
+                try {
+                    console.log(res);
+                    
+                    const data = JSON.parse(res.data);
+                    if (data.type === 'roomCreated') {
+                        that.setData({ roomId: data.roomId, creatStatus: true });
+                        that.addLog(`${data.message}: ${data.roomId}`);
+                    } else if (data.type === 'joined') {
+                        that.setData({ roomId: data.roomId, creatStatus: false });
+                        that.addLog(`${data.message}: ${data.roomId}`);
+                    } else if (data.type === 'userJoined') {
+                        that.addLog(data.message);
+                    } else if (data.type === 'userLeft') {
+                        that.addLog(data.message);
+                    } else if (data.type === 'data') {
+                        console.log(JSON.stringify(data));
+                        
+                        if (data.payload.moduleStatus) {
+                            that.setData({ 
+                                buttons: data.payload.newButtons,
+                                startPause: data.payload.startPause 
+                            });
+                            if(data.payload.value && that.data.creatStatus){
+                                console.log(data.payload,"已接收的数据");
+                                
+                                that.sendData(data.payload.value);
+                            }
+                        } else {
+                            that.setData({ 
+                                buttons: data.payload.newButtons, 
+                                startPause: data.payload.startPause 
+                            });
+                            if(data.payload.value && that.data.creatStatus){
+                                that.sendData(data.payload.value);
+                            }
                         }
-                    }else {
-                        console.log(data.payload.newButtons, "我是开关测试数据接收", data.payload.value);
-
-                        that.setData({ buttons: data.payload.newButtons, startPause: data.payload.startPause });
-                        if(data.payload.value){
-                            that.sendData(data.payload.value)
-                        }
+                        that.addLog(`${data.message}: ${data.payload}我是接收数据`);
+                    } else if (data.type === 'error') {
+                        that.addLog(`错误: ${data.message}`);
+                    } else {
+                        that.addLog('未知消息: ' + JSON.stringify(data));
                     }
-                    console.log(data.payload, "我是接收数据");
-
-                    that.addLog(`${data.message}: ${data.payload}我是接收数据`);
+                } catch (e) {
+                    that.addLog('消息解析错误');
                 }
-                else if (data.type === 'error') {
-                    that.addLog(`错误: ${data.message}`);
-                } else {
-                    that.addLog('未知消息: ' + JSON.stringify(data));
-                }
-            } catch (e) {
-                that.addLog('消息解析错误');
-            }
-        });
+            });
 
-        wx.onSocketClose(() => {
-            that.setData({ connected: false });
-            that.addLog('与服务器断开连接');
-        });
+            wx.onSocketClose(() => {
+                that.setData({ connected: false });
+                that.addLog('与服务器断开连接');
+            });
 
-        wx.onSocketError((err) => {
-            that.addLog('WebSocket 错误: ' + JSON.stringify(err));
+            wx.onSocketError((err) => {
+                that.addLog('WebSocket 错误: ' + JSON.stringify(err));
+            });
         });
     },
 
-    // 创建房间
-    createRoom() {
+    // 创建房间 (使用 async/await)
+    async createRoom() {
         const app = getApp();
         const userInfo = app.getGlobalUserInfo();
         if (userInfo.isScanning) {
-            if (!this.data.connected) {
-                this.connectWebSocket();
-                setTimeout(() => {
-
-                    this.sendMessageToServer({ type: 'create' });
-                }, 1000); // 延迟发送，确保连接建立
-            } else {
+            try {
+                if (!this.data.connected) {
+                    await this.connectWebSocket();
+                }
                 this.sendMessageToServer({ type: 'create' });
+            } catch (err) {
+                console.error('创建房间失败:', err);
             }
         } else {
             wx.showToast({
@@ -153,23 +150,22 @@ Page({
                 duration: 2000,
             });
         }
-
     },
 
-    // 加入房间
-    joinRoom() {
-        const that = this
-        const roomId = that.data.inputMessage;
+    // 加入房间 (使用 async/await)
+    async joinRoom() {
+        const roomId = this.data.inputMessage;
         if (!roomId) {
             console.log('请输入房间ID');
             return;
         }
-        // if (!that.data.connected) {
-        that.connectWebSocket();
-        setTimeout(() => {
-            that.sendMessageToServer({ type: 'join', roomId });
-        }, 1000);
-  
+        
+        try {
+            await this.connectWebSocket();
+            this.sendMessageToServer({ type: 'join', roomId });
+        } catch (err) {
+            console.error('加入房间失败:', err);
+        }
     },
 
     // 发送消息
@@ -183,169 +179,158 @@ Page({
         this.setData({ messageInput: '' });
     },
 
-    // 发送消息到服务器
+    // 发送消息到服务器 (返回 Promise)
     sendMessageToServer(data) {
-        wx.sendSocketMessage({
-            data: JSON.stringify(data),
-            success() {
-                
-            },
-            fail(err) {
-                this.addLog('发送失败: ' + JSON.stringify(err));
-            },
+        return new Promise((resolve, reject) => {
+            wx.sendSocketMessage({
+                data: JSON.stringify(data),
+                success() {
+                    console.log("发送数据成功"+data);
+                    
+                    resolve();
+                },
+                fail(err) {
+                    this.addLog('发送失败: ' + JSON.stringify(err));
+                    reject(err);
+                },
+            });
         });
     },
 
-    handleButtonTap(e: any) {
-        const index = e.detail.index; // 从子组件传递的 index
-        const value = e.detail.value; // 从子组件传递的 value
+    // 按钮点击处理
+    async handleButtonTap(e: any) {
+        const index = e.detail.index;
+        const value = e.detail.value;
 
-        // 更新 buttons 数组，确保只有一个按钮被选中
         const newButtons = this.data.buttons.map((item, i) => i === Number(index));
-        let data = { newButtons: newButtons, value: value, startPause: true, moduleStatus: true }
-        let data1 = { newButtons: newButtons, value: null, startPause: true, moduleStatus: true }
+        let data = { newButtons: newButtons, value: value, startPause: true, moduleStatus: true };
+        let data1 = { newButtons: newButtons, value: null, startPause: true, moduleStatus: true };
 
         this.setData({ buttons: newButtons });
 
-        console.log("选中按钮:", index, "值:", value);
-
-        // this.sendData(value)
-        if (this.data.creatStatus) {
-            this.sendMessage(data1)
-            this.sendData(value)
-        } else {
-            this.sendMessage(data)
+        try {
+            if (this.data.creatStatus) {
+                await this.sendMessage(data1);
+                await this.sendData(value);
+                console.log("我是发送数据1");
+                
+            } else {
+                await this.sendMessage(data);
+                console.log("我是发送数据2");
+            }
+            this.setData({ startPause: true });
+        } catch (err) {
+            console.error('按钮操作失败:', err);
         }
-
-        // 切换 startPause 状态
-        this.setData({
-            startPause: true, // 切换 true/false
-        });
-
-        console.log(1);
     },
 
-    startBtn(e: any) {
+    // 开始/暂停按钮 (使用 async/await)
+    async startBtn(e: any) {
         wx.vibrateShort({ type: 'heavy' });
         let newButtons1 = this.data.buttons.map((item, i) => i === Number(0));
-        console.log(newButtons1, '数据');
-        // const value = e.currentTarget.dataset.value; // 获取 data-value="0xfB"
-        // 修改发码参数
-        const valueStart = "0xFB"
-        const valueEnd = "0xFD"
-        console.log(valueStart,valueEnd, '测试开关键数据');
-        if (this.data.startPause) {
-            console.log("我是暂停", !this.data.startPause);
-            this.setData({
-                startPause: false,
-                buttons: Array(10).fill(null)
-            });
-            let data = { newButtons: Array(10).fill(null), value: valueEnd, startPause: false, moduleStatus: false }
-            let data1 = { newButtons: Array(10).fill(null), value: null, startPause: false, moduleStatus: false }
-            if (this.data.creatStatus) {
-                this.sendData(valueEnd)
-                this.sendMessage(data1)
-            } else {
-                this.sendMessage(data)
-            }
-        } else {
-            console.log("我是开始", !this.data.startPause);
-            this.setData({
-                startPause: true, // 切换 true/false
-                buttons: newButtons1
-            });
-            let data = { newButtons: newButtons1, value: valueStart, startPause: true, moduleStatus: false }
-            let data1 = { newButtons: newButtons1, value: null, startPause: true, moduleStatus: false }
+        const valueStart = "0xFB";
+        const valueEnd = "0xFD";
 
-            if (this.data.creatStatus) {
-                this.sendData(valueStart)
-                this.sendMessage(data1)
+        try {
+            if (this.data.startPause) {
+                this.setData({
+                    startPause: false,
+                    buttons: Array(10).fill(null)
+                });
+                let data = { newButtons: Array(10).fill(null), value: valueEnd, startPause: false, moduleStatus: false };
+                let data1 = { newButtons: Array(10).fill(null), value: null, startPause: false, moduleStatus: false };
+                
+                if (this.data.creatStatus) {
+                    await this.sendData(valueEnd);
+                    await this.sendMessage(data1);
+                } else {
+                    await this.sendMessage(data);
+                }
             } else {
-                this.sendMessage(data)
+                this.setData({
+                    startPause: true,
+                    buttons: newButtons1
+                });
+                let data = { newButtons: newButtons1, value: valueStart, startPause: true, moduleStatus: false };
+                let data1 = { newButtons: newButtons1, value: null, startPause: true, moduleStatus: false };
+
+                if (this.data.creatStatus) {
+                    await this.sendData(valueStart);
+                    await this.sendMessage(data1);
+                } else {
+                    await this.sendMessage(data);
+                }
             }
+        } catch (err) {
+            console.error('开始/暂停操作失败:', err);
         }
     },
 
+    // 发送数据到蓝牙 (返回 Promise)
     sendData(value: string) {
-        const app = getApp()
-        const userInfo = app.getGlobalUserInfo()
-        console.log(value,"蓝牙已准备发送的数据");
-        
-        let state = userInfo.isScanning
-
-        // 首先要判断下蓝牙的连接状态
-        if (state) {
-            // 判断蓝牙已连接 发送指令
-            const decimalValue = parseInt(value, 16); // 将十六进制转换为十进制
-            const buffer = new ArrayBuffer(2);
-            const dataView = new DataView(buffer);
-            dataView.setUint16(0, decimalValue, true); // 使用转换后的十进制值
-            wx.writeBLECharacteristicValue({
-                deviceId: userInfo.deviceId,
-                serviceId: userInfo.serviceId,
-                characteristicId: userInfo.writeCharacteristicId,
-                value: buffer,
-                success: () => {
-                    console.log('远程指令发送成功');
-                    // this.enableNotifications(); // 发送指令后启用通知
-                },
-                fail: (res) => {
-                    console.log("远程指令发送失败");
-
-                }
-            });
-
-        } else {
-            wx.showToast({
-                title: "蓝牙未连接",
-                icon: "error",
-                duration: 2000,
-            });
-        }
+        return new Promise((resolve, reject) => {
+            const app = getApp();
+            const userInfo = app.getGlobalUserInfo();
+            
+            if (userInfo.isScanning) {
+                const decimalValue = parseInt(value, 16);
+                const buffer = new ArrayBuffer(2);
+                const dataView = new DataView(buffer);
+                dataView.setUint16(0, decimalValue, true);
+                
+                wx.writeBLECharacteristicValue({
+                    deviceId: userInfo.deviceId,
+                    serviceId: userInfo.serviceId,
+                    characteristicId: userInfo.writeCharacteristicId,
+                    value: buffer,
+                    success: () => {
+                        console.log('远程指令发送成功');
+                        resolve();
+                    },
+                    fail: (res) => {
+                        console.log("远程指令发送失败");
+                        reject(res);
+                    }
+                });
+            } else {
+                wx.showToast({
+                    title: "蓝牙未连接",
+                    icon: "error",
+                    duration: 2000,
+                });
+                reject(new Error('蓝牙未连接'));
+            }
+        });
     },
 
     shareRoom() {
         // 微信在控制
     },
 
-    // 页面初次渲染完成时
     onReady() {
-
+        // 页面初次渲染完成时
     },
-    // 页面加载时初始化并创建房间
+
     onLoad(options) {
-        let param = options.param
+        let param = options.param;
         if (param) {
-            const that = this
-            that.setData({
-                roomId: param, // 将参数存入 data
+            this.setData({
+                roomId: param,
                 creatStatus: false,
                 inputMessage: param
             });
         }
-
     },
 
-    // 页面卸载时关闭 WebSocket
-    onUnload() {
-      if (this.data.creatStatus) {
-        setTimeout(() => {
-                this.data.connected = false
+    async onUnload() {
+        if (this.data.creatStatus && this.data.connected) {
+            try {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                this.data.connected = false;
                 wx.closeSocket();
-        }, 2000)
-      }
-        // if (this.data.connected) {
-            // this.sendMessage({ buttons: Array(10).fill(null), startPause: false, value: '0xfB', join: true })
-            // console.log("已经关闭websocket");
-            // wx.showToast({
-            //     title: "蓝牙未连接",
-            //     icon: "error",
-            //     duration: 2000,
-            // });
-            // setTimeout(() => {
-            //     this.data.connected = false
-            //     wx.closeSocket();
-            // }, 2000)
-        // }
+            } catch (err) {
+                console.error('关闭连接失败:', err);
+            }
+        }
     },
 });
