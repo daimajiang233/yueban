@@ -51,6 +51,8 @@ Component({
 
         // 连接蓝牙主函数
         startBluetoothProcess(){
+            const app = getApp();
+            const userInfo = app.getGlobalUserInfo();
             wx.showLoading({
                 title: '连接中...', // 提示内容
                 mask: true,        // 是否显示透明蒙层，防止触摸穿透（可选）
@@ -61,6 +63,7 @@ Component({
                     if (this.data.isScanning) {
                         console.log('已连接，跳过流程');
                         this.setData({ status: '已连接，跳过流程' });
+                        wx.hideLoading();
                         return;
                     }
             
@@ -94,12 +97,15 @@ Component({
                     } catch (err) {
                             console.log('未找到设备或连接失败');
                             this.setData({ status: '未找到设备或连接失败' });
+                            wx.hideLoading();
                             wx.showToast({
                                 title: '连接失败！', // 提示内容（必填）
                                 icon: 'error',   // 图标类型（可选：success / loading / none）
                                 duration: 1500,    // 显示时长（毫秒，默认 1500）
                                 mask: false,       // 是否显示透明蒙层（可选，默认 false）
                             });
+                            userInfo.isScanning = false
+                            this.setData({isScanning: false, deviceId: '', serviceId: '', characteristicId: '', status: '已断开设备连接' });
                     }
                     // 检查连接状态
                     await this.checkConnectionStatus();
