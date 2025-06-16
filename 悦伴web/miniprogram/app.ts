@@ -15,7 +15,7 @@ App<IAppOption>({
           startPause: false,
           buttons: new Array(10).fill(false)
         },
-        connected:false
+        // connected:false
     }
   },
   getGlobalUserInfo() {

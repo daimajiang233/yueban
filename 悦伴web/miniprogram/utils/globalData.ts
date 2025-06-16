@@ -10,7 +10,7 @@ interface UserInfo {
     advertisData?: string;
     foundTime?: string;
     modelInfo:object,
-    connected:boolean
+    // connected:boolean
 }
 
 // 定义 IAppOption 接口，明确 globalData 的结构

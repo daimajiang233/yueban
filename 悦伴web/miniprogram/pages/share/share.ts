@@ -111,8 +111,21 @@ Page({
                         that.addLog(`${data.message}: ${data.payload}我是接收数据`);
                     } else if (data.type === 'error') {
                         that.addLog(`错误: ${data.message}`);
+                        console.log(JSON.stringify(data));
+                        wx.showToast({
+                            title: "房间号错误",
+                            icon: "error",
+                            duration: 2000,
+                        });
+                        this.setData({
+                          connected:false,
+                          inputMessage:''
+                        })
+                        
                     } else {
                         that.addLog('未知消息: ' + JSON.stringify(data));
+                        console.log(JSON.stringify(data));
+                        
                     }
                 } catch (e) {
                     that.addLog('消息解析错误');
@@ -142,7 +155,7 @@ Page({
             });
             return;
         }
-    
+        wx.closeSocket()
         try {
             if (this.data.connected) {
                 // 如果已经连接，直接发送创建房间的消息
@@ -173,8 +186,9 @@ Page({
             console.log('请输入房间ID');
             return;
         }
-        
+        wx.closeSocket()
         try {
+            // wx.closeSocket();
             await this.connectWebSocket();
             this.sendMessageToServer({ type: 'join', roomId });
         } catch (err) {
@@ -255,8 +269,8 @@ Page({
                 let data1 = { newButtons: Array(10).fill(null), value: null, startPause: false, moduleStatus: false };
                 
                 if (this.data.creatStatus) {
-                    await this.sendData(valueEnd);
                     await this.sendMessage(data1);
+                    await this.sendData(valueEnd);
                 } else {
                     await this.sendMessage(data);
                 }
@@ -269,8 +283,8 @@ Page({
                 let data1 = { newButtons: newButtons1, value: null, startPause: true, moduleStatus: false };
 
                 if (this.data.creatStatus) {
-                    await this.sendData(valueStart);
-                    await this.sendMessage(data1);
+                  await this.sendMessage(data1);
+                  await this.sendData(valueStart);
                 } else {
                     await this.sendMessage(data);
                 }
@@ -337,14 +351,31 @@ Page({
     },
 
     async onUnload() {
-        if (this.data.creatStatus && this.data.connected) {
-            try {
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                this.data.connected = false;
-                wx.closeSocket();
-            } catch (err) {
-                console.error('关闭连接失败:', err);
-            }
-        }
-    },
+          if (this.data.creatStatus && this.data.connected) {
+              try {
+                  // await new Promise(resolve => setTimeout(resolve, 2000));
+                  this.setData({ connected: false }); // 更新状态（如果页面还在）
+                  wx.closeSocket();
+                  console.log('关闭连接成功:');
+                  
+              } catch (err) {
+                  console.error('关闭连接失败:', err);
+              }
+          }
+      },
+
+    // 异步因为用户操作太快会导致延迟执行，同步操作能确保资源立即释放
+    // async onUnload() {
+    //     if (this.data.creatStatus && this.data.connected) {
+    //         try {
+    //             await new Promise(resolve => setTimeout(resolve, 2000));
+    //             this.data.connected = false;
+    //             wx.closeSocket();
+    //             console.log('关闭连接成功:');
+                
+    //         } catch (err) {
+    //             console.error('关闭连接失败:', err);
+    //         }
+    //     }
+    // },
 });
