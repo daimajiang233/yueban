@@ -14,7 +14,8 @@ App<IAppOption>({
         modelInfo:{
           startPause: false,
           buttons: new Array(10).fill(false)
-        }
+        },
+        connected:false
     }
   },
   getGlobalUserInfo() {

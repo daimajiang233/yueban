@@ -134,23 +134,35 @@ Page({
     async createRoom() {
         const app = getApp();
         const userInfo = app.getGlobalUserInfo();
-        if (userInfo.isScanning) {
-            console.log(userInfo.isScanning,!this.data.connected);
-            
-            try {
-                if (!this.data.connected) {
-                    await this.connectWebSocket();
-                }
-                this.sendMessageToServer({ type: 'create' });
-            } catch (err) {
-                console.error('创建房间失败:', err);
-            }
-        } else {
+        if (!userInfo.isScanning) {
             wx.showToast({
                 title: "蓝牙未连接",
                 icon: "none",
                 duration: 2000,
             });
+            return;
+        }
+    
+        try {
+            if (this.data.connected) {
+                // 如果已经连接，直接发送创建房间的消息
+                await this.sendMessageToServer({ type: 'create' });
+            } else {
+                // 如果未连接，先关闭旧的 WebSocket（确保无残留连接）
+                await new Promise((resolve) => {
+                    wx.closeSocket({
+                        success: () => resolve(),
+                        fail: () => resolve(), // 即使关闭失败也继续
+                    });
+                });
+                // 建立新连接并等待完成
+                await this.connectWebSocket();
+                // 连接成功后发送创建房间的消息
+                await this.sendMessageToServer({ type: 'create' });
+            }
+        } catch (err) {
+            console.error('创建房间失败:', err);
+            this.addLog('创建房间失败: ' + JSON.stringify(err));
         }
     },
 
