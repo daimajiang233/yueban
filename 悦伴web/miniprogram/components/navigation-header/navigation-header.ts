@@ -27,6 +27,8 @@ Component({
   
       attached() {
         this.startBluetoothProcess(); // 页面加载时自动启动蓝牙流程
+        // 启动定时器，每秒测连接状态
+        this.startConnectionCheckTimer();
       },
   
       detached() {
@@ -298,8 +300,8 @@ Component({
                         userInfo.isScanning = true;
                         console.log(`成功连接到设备: ${id}`, res);
                         this.setData({ isScanning: true, status: `已连接到设备 ${id}` });
-                        // 连接成功后启动定时器，每秒发送0xFF检测连接状态
-                        this.startConnectionCheckTimer();
+                        // // 连接成功后启动定时器，每秒发送0xFF检测连接状态
+                        // this.startConnectionCheckTimer();
                         resolve(true);
                     },
                     fail: (err) => {

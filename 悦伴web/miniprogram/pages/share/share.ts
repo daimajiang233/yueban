@@ -135,6 +135,8 @@ Page({
         const app = getApp();
         const userInfo = app.getGlobalUserInfo();
         if (userInfo.isScanning) {
+            console.log(userInfo.isScanning,!this.data.connected);
+            
             try {
                 if (!this.data.connected) {
                     await this.connectWebSocket();
