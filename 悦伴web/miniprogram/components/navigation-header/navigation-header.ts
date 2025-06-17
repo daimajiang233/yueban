@@ -7,7 +7,8 @@ Component({
         writeCharacteristicId: '', // 特征值ID
         timerId: null, // 定时器ID，初始化为null
         adapterState: false, // 蓝牙适配器状态
-        status:""   //蓝牙状态
+        status:"",   //蓝牙状态
+        times:""
     },
 
     //  组件的生命周期
@@ -28,7 +29,7 @@ Component({
       attached() {
         this.startBluetoothProcess(); // 页面加载时自动启动蓝牙流程
         // 启动定时器，每秒测连接状态
-        this.startConnectionCheckTimer();
+        // this.startConnectionCheckTimer();
       },
   
       detached() {
@@ -230,6 +231,7 @@ Component({
                 fail: (err) => {
                     console.error('设备扫描失败:', err);
                     this.setData({status: '设备扫描失败' });
+                    console.log('未找到设备或连接失败');
                     reject(err);
                 }
                 });
@@ -418,6 +420,17 @@ Component({
         startConnectionCheckTimer() {
             const app = getApp();
             const userInfo = app.getGlobalUserInfo();
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', { 
+            hour12: false,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+            });
+            console.error('定时器启动:',timeStr);
             
             // 如果已有定时器，先清除
             if (this.data.timerId) {
@@ -426,8 +439,8 @@ Component({
         
             // 每秒检查一次连接状态
             const timerId = setInterval(() => {
-                const app = getApp();
-                const userInfo = app.getGlobalUserInfo();
+                // const app = getApp();
+                // const userInfo = app.getGlobalUserInfo();
                 if (!this.data.isScanning || !this.data.deviceId) {
                     // 如果未连接或缺少必要信息，清除定时器
                     clearInterval(timerId);
@@ -436,23 +449,70 @@ Component({
                     console.log('连接已断开或缺少必要信息，停止定时器');
                     return;
                 }
-                wx.onBLEConnectionStateChange((res)=>{
-                    if (!res.connected) {                        
-                        this.setData({ 
-                            isScanning: false, 
-                            deviceId: '', 
-                            serviceId: '', 
-                            characteristicId: '', 
-                            status: '蓝牙已断开设备连接' 
+
+                wx.readBLECharacteristicValue({
+                    deviceId: this.data.deviceId,
+                    serviceId: this.data.serviceId,
+                    characteristicId: this.data.characteristicId,
+                    success: (res) => {
+                      // 读取成功，设备连接正常
+                      this.setData({ isScanning: true, status: '连接正常' });
+                      userInfo.isScanning = true;
+                      const now = new Date();
+                        const timeStr = now.toLocaleString('zh-CN', { 
+                        hour12: false,
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
                         });
-                        console.log(!res.connected,this.data.isScanning,"aoe");
-                        userInfo.isScanning = false;
-                        clearInterval(timerId);
-                    } else {
-                        this.setData({ isScanning: true, status: '连接正常' });
-                        userInfo.isScanning = true;
+                      console.log('特征值读取成功，连接正常',timeStr);
+                    },
+                    fail: (err) => {
+                     clearInterval(timerId);
+                        const now = new Date();
+                        const timeStr = now.toLocaleString('zh-CN', { 
+                        hour12: false,
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                        });
+                      // 读取失败，假设连接断开
+                      console.error('特征值读取失败，连接可能断开:',timeStr, err);
+                      this.setData({
+                        isScanning: false,
+                        deviceId: '',
+                        serviceId: '',
+                        characteristicId: '',
+                        status: '蓝牙已断开设备连接',
+                        timerId: null,
+                        times:timeStr
+                      });
+                      userInfo.isScanning = false;
                     }
-                })
+                });
+                // wx.onBLEConnectionStateChange((res)=>{
+                //     if (!res.connected) {                        
+                //         this.setData({ 
+                //             isScanning: false, 
+                //             deviceId: '', 
+                //             serviceId: '', 
+                //             characteristicId: '', 
+                //             status: '蓝牙已断开设备连接' 
+                //         });
+                //         console.log(!res.connected,this.data.isScanning,"aoe");
+                //         userInfo.isScanning = false;
+                //         clearInterval(timerId);
+                //     } else {
+                //         this.setData({ isScanning: true, status: '连接正常' });
+                //         userInfo.isScanning = true;
+                //     }
+                // })
 
                 // 获取已连接的蓝牙设备（必须传入 services，如果不需要可以传空数组 []）
                 // wx.getConnectedBluetoothDevices({
