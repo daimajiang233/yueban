@@ -301,7 +301,7 @@ Component({
                         console.log(`成功连接到设备: ${id}`, res);
                         this.setData({ isScanning: true, status: `已连接到设备 ${id}` });
                         // // 连接成功后启动定时器，每秒发送0xFF检测连接状态
-                        // this.startConnectionCheckTimer();
+                        this.startConnectionCheckTimer();
                         resolve(true);
                     },
                     fail: (err) => {
@@ -432,63 +432,81 @@ Component({
                     // 如果未连接或缺少必要信息，清除定时器
                     clearInterval(timerId);
                     this.setData({ timerId: null, isScanning: false, status: '连接已断开或缺少必要信息' });
+                    userInfo.isScanning =false
                     console.log('连接已断开或缺少必要信息，停止定时器');
                     return;
                 }
-            
-                // 获取已连接的蓝牙设备（必须传入 services，如果不需要可以传空数组 []）
-                wx.getConnectedBluetoothDevices({
-                    services: [this.data.serviceId], // 如果不需要特定服务，传空数组；否则传入你的服务 UUID 列表
-                    success: (res) => {
-                        console.log(res.devices,this.data.deviceId,this.data.name,"aoe");
-                        // 检查目标设备是否在已连接设备列表中
-                        const isConnected = res.devices.some(device => 
-                            device.deviceId === this.data.deviceId && device.name === this.data.name
-                        );
-                        
-                        if (isConnected) {
-                            console.log('设备仍然连接:', this.data.name);
-                            this.setData({isScanning: true, status: '连接正常' });
-                            userInfo.isScanning= true
-            
-                        } else {
-                            console.log('设备已断开连接:', this.data.name);
-                            // this.setData({ isScanning: false, status: '连接已断开' });
-                            //   userInfo.isScanning= false
-                            // 更新全局状态
-                            userInfo.isScanning = false;
-                            
-                            // 更新本地状态
-                            this.setData({ 
-                                isScanning: false, 
-                                deviceId: '', 
-                                serviceId: '', 
-                                characteristicId: '', 
-                                status: '蓝牙已断开设备连接' 
-                            });
-            
-                            // 清除定时器
-                            clearInterval(timerId);
-                            // this.setData({ timerId: null });
-                            
-                        }
-                    },
-                    fail: (err) => {
-                        console.error('获取已连接设备失败:', err);
-                        // 假设获取失败就是断开连接
-                        // this.setData({ isScanning: false, status: '连接已断开', });
-                        userInfo.isScanning = false;
-                        clearInterval(timerId);
+                wx.onBLEConnectionStateChange((res)=>{
+                    if (!res.connected) {                        
                         this.setData({ 
                             isScanning: false, 
                             deviceId: '', 
                             serviceId: '', 
-                            writeCharacteristicId: '', 
-                            timerId: null,
-                            status: '已断开设备连接' 
+                            characteristicId: '', 
+                            status: '蓝牙已断开设备连接' 
                         });
+                        console.log(!res.connected,this.data.isScanning,"aoe");
+                        userInfo.isScanning = false;
+                        clearInterval(timerId);
+                    } else {
+                        this.setData({ isScanning: true, status: '连接正常' });
+                        userInfo.isScanning = true;
                     }
-                });
+                })
+
+                // 获取已连接的蓝牙设备（必须传入 services，如果不需要可以传空数组 []）
+                // wx.getConnectedBluetoothDevices({
+                //     services: [this.data.serviceId], // 如果不需要特定服务，传空数组；否则传入你的服务 UUID 列表
+                //     success: (res) => {
+                //         console.log(res.devices,this.data.deviceId,this.data.name,"aoe");
+                //         // 检查目标设备是否在已连接设备列表中
+                //         const isConnected = res.devices.some(device => 
+                //             device.deviceId === this.data.deviceId && device.name === this.data.name
+                //         );
+                        
+                //         if (isConnected) {
+                //             console.log('设备仍然连接:', this.data.name);
+                //             this.setData({isScanning: true, status: '连接正常' });
+                //             userInfo.isScanning= true
+            
+                //         } else {
+                //             console.log('设备已断开连接:', this.data.name);
+                //             // this.setData({ isScanning: false, status: '连接已断开' });
+                //             //   userInfo.isScanning= false
+                //             // 更新全局状态
+                //             userInfo.isScanning = false;
+                            
+                //             // 更新本地状态
+                //             this.setData({ 
+                //                 isScanning: false, 
+                //                 deviceId: '', 
+                //                 serviceId: '', 
+                //                 characteristicId: '', 
+                //                 status: '蓝牙已断开设备连接' 
+                //             });
+            
+                //             // 清除定时器
+                //             clearInterval(timerId);
+                //             // this.setData({ timerId: null });
+                            
+                //         }
+                //     },
+                //     fail: (err) => {
+                //         console.error('获取已连接设备失败:', err);
+                //         // 假设获取失败就是断开连接
+                //         // this.setData({ isScanning: false, status: '连接已断开', });
+                //         userInfo.isScanning = false;
+                //         clearInterval(timerId);
+                //         this.setData({ 
+                //             isScanning: false, 
+                //             deviceId: '', 
+                //             serviceId: '', 
+                //             writeCharacteristicId: '', 
+                //             timerId: null,
+                //             status: '已断开设备连接' 
+                //         });
+                //     }
+                // });
             }, 1000); // 每1000ms检查一次
         
             // 保存定时器ID
