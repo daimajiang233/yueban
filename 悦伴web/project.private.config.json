@@ -11,7 +11,7 @@
       "list": [
         {
           "name": "pages/share/share",
-          "pathName": "pages/my-Model/my-Model",
+          "pathName": "pages/share/share",
           "query": "",
           "launchMode": "default",
           "scene": null

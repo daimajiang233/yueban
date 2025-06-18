@@ -66,13 +66,10 @@ Component({
             wx.vibrateShort({ type: 'heavy' });
             let isScanning = this.data.isScanning
             if(isScanning){
-                this.stopBluetoothProcess().then(() => {
-                    // this.startBluetoothProcess(); // 重新启动蓝牙流程
-                    
-                });
+                this.stopBluetoothProcess()
             }else{
                 this.startBluetoothProcess();
-                console.log('已经打开',this.data.connected);
+                console.log('已经打开');
             }
         },
 
@@ -120,10 +117,15 @@ Component({
                             duration: 1500,    // 显示时长（毫秒，默认 1500）
                             mask: false,       // 是否显示透明蒙层（可选，默认 false）
                         });
+                        console.log("连接成功",this.data.adapterState);
+                        
                     } catch (err) {
                             console.log('未找到设备或连接失败');
                             this.setData({ status: '未找到设备或连接失败' });
+                        console.log("连接错误2",this.data.adapterState);
                             wx.hideLoading();
+                            this.closeBluetooth();
+                            // this.stopBluetoothProcess()
                             wx.showToast({
                                 title: '连接失败！', // 提示内容（必填）
                                 icon: 'error',   // 图标类型（可选：success / loading / none）
@@ -136,9 +138,18 @@ Component({
                     // 检查连接状态
                     await this.checkConnectionStatus();
                 }catch (err) {
+                    wx.hideLoading();
+                    this.closeBluetooth();
+                    // this.stopBluetoothProcess()
                     console.error('蓝牙处理过程出错:', err);
+                    console.log("连接错误1",this.data.adapterState);
                     this.setData({ status: `蓝牙处理出错: ${err}` });
-                    
+                    wx.showToast({
+                        title: '未搜索到设备！', // 提示内容（必填）
+                        icon: 'error',   // 图标类型（可选：success / loading / none）
+                        duration: 1500,    // 显示时长（毫秒，默认 1500）
+                        mask: false,       // 是否显示透明蒙层（可选，默认 false）
+                    });
                 }
             }
             // 执行单次蓝牙流程
@@ -156,7 +167,7 @@ Component({
                 console.log('已停止连接状态检测定时器');
             }
     
-            return this.stopScan().then(() => {
+            // return this.stopScan().then(() => {
                 if (this.data.isScanning) {
                     return new Promise((resolve, reject) => {
                         wx.closeBLEConnection({
@@ -178,7 +189,7 @@ Component({
                         });
                     });
                 }
-            });
+            // });
         },
 
         // 初始化适配器
@@ -255,16 +266,18 @@ Component({
                 success: (res) => {
                     timeoutTimer = setTimeout(() => {
                         wx.stopBluetoothDevicesDiscovery();
-                        reject(new Error('Scan timeout'));
                         console.log('扫描超时结束');
-                    }, 5000);
+                        reject(new Error('Scan timeout'));
+                    }, 6000);
                     wx.onBluetoothDeviceFound((res) => {
                         const targetDevice = res.devices.find(device => device.name === this.data.name);
                         if (targetDevice) {
                             console.log('找到目标设备:', targetDevice);
-                            resolve(targetDevice);
-                            wx.stopBluetoothDevicesDiscovery(); // 找到后停止扫描
                             clearTimeout(timeoutTimer); // 清除超时
+                            console.log("清除超时成功");
+                            
+                            // wx.stopBluetoothDevicesDiscovery(); // 找到后停止扫描
+                            resolve(targetDevice);
                             // 这里连接设备...
                           }
                     })
@@ -552,7 +565,7 @@ Component({
                       this.closeBluetooth();
                   }
               });
-          }, 1000); // 每秒检查一次
+          }, 2000); // 每秒检查一次
 
           this.setData({ timerId });
           console.log('已启动连接状态检测定时器');

@@ -52,7 +52,7 @@ Page({
         return new Promise((resolve, reject) => {
             const that = this;
             wx.connectSocket({
-                url: 'wss://www.nick9995403432.com.cn',
+                url: 'wss://wss.nick9995403432.com.cn',
                 success() {
                     that.addLog('正在连接服务器...');
                     console.log('正在连接服务器...');
