@@ -4,6 +4,6 @@
     <view class="bluth-btn" bindtap="toggleScan">
         {{isScanning?"断开连接":"点击连接"}}
     </view>
-    <view class="{{isScanning?'status-success':'status-err'}}"> {{isScanning?"已连接":"未连接"}}</view>
+    <view class="{{isScanning?'status-success':'status-err'}}"> {{isScanning?"已连接":"未连接"}}{{times}}</view>
   </view>
 </view>
