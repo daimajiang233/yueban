@@ -29,12 +29,11 @@ Component({
       attached() {
         this.startBluetoothProcess(); // 页面加载时自动启动蓝牙流程
         // 启动定时器，每秒测连接状态
-        // this.startConnectionCheckTimer();
+        this.startConnectionCheckTimer();
         wx.onBLEConnectionStateChange((res) => {
             if (!res.connected) {
               console.log("attached检测到蓝牙断开");
-              
-                // clearInterval(this.data.timerId);
+                clearInterval(this.data.timerId);
                 this.setData({ 
                     isScanning: false, 
                     deviceId: '', 
@@ -89,7 +88,7 @@ Component({
                 try {
                     // 如果已连接，跳过流程
                     if (this.data.isScanning) {
-                        console.log('已连接，跳过流程');
+                        console.log('已连接，跳过流程',this.data.isScanning);
                         this.setData({ status: '已连接，跳过流程' });
                         wx.hideLoading();
                         return;
@@ -97,16 +96,15 @@ Component({
             
                     // 确保蓝牙适配器已初始化
                     if (!this.data.adapterState) {
-                        await this.initBluetooth().then(()=>{
-                          // 如果未在扫描中，开始扫描
-                          if (!this.data.isScanning) {
-                              this.startScan()
+                        await this.initBluetooth()
+                        // 如果未在扫描中，开始扫描
+                        if (!this.data.isScanning) {
+                            await this.startScan()
                           }
-                        });
                     }
             
                     // 等待片刻以便发现设备
-                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    // await new Promise(resolve => setTimeout(resolve, 5000));
             
                     // 尝试查找、连接设备并获取服务和特征值
                     try {
@@ -246,16 +244,32 @@ Component({
                 this.setData({ status: '已在扫描中' });
                 return Promise.resolve();
             }
-            // 先关闭所有搜索在打开
-            this.stopScan()
+            // 先关闭监听再打开
+            // this.stopScan()
+            wx.offBluetoothDeviceFound();
+            let timeoutTimer = null;
             return new Promise((resolve, reject) => {
                 wx.startBluetoothDevicesDiscovery({
                 services: [], // 空数组表示扫描所有设备
                 allowDuplicatesKey: false,
                 success: (res) => {
+                    timeoutTimer = setTimeout(() => {
+                        wx.stopBluetoothDevicesDiscovery();
+                        reject(new Error('Scan timeout'));
+                        console.log('扫描超时结束');
+                    }, 5000);
+                    wx.onBluetoothDeviceFound((res) => {
+                        const targetDevice = res.devices.find(device => device.name === this.data.name);
+                        if (targetDevice) {
+                            console.log('找到目标设备:', targetDevice);
+                            resolve(targetDevice);
+                            wx.stopBluetoothDevicesDiscovery(); // 找到后停止扫描
+                            clearTimeout(timeoutTimer); // 清除超时
+                            // 这里连接设备...
+                          }
+                    })
                     console.log('开始设备扫描:', res);
                     this.setData({status: '正在扫描设备...' });
-                    resolve(true);
                 },
                 fail: (err) => {
                     console.error('设备扫描失败:', err);
@@ -267,7 +281,7 @@ Component({
             });
         },
 
-        // 停止设备
+        // 停止扫描
         stopScan(){
             return new Promise((resolve, reject) => {
                 wx.stopBluetoothDevicesDiscovery({
@@ -332,7 +346,7 @@ Component({
                         console.log(`成功连接到设备: ${id}`, res);
                         this.setData({ isScanning: true, status: `已连接到设备 ${id}` });
                         // // 连接成功后启动定时器，每秒发送0xFF检测连接状态
-                        // this.startConnectionCheckTimer();
+                        this.startConnectionCheckTimer();
                         resolve(true);
                     },
                     fail: (err) => {
