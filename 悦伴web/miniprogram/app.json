@@ -30,6 +30,9 @@
   "permission": {
     "scope.bluetooth": {
       "desc": "需要使用蓝牙功能以连接设备"
+    },
+    "scope.userLocation": {
+        "desc": "你的位置信息将用于蓝牙设备扫描"
     }
   }
 }
