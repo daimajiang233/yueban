@@ -6,7 +6,7 @@ App<IAppOption>({
     userInfo:{
         name: "YUE BAN",
         status: false,
-        isScanning: false, //全局蓝牙连接状态，默认false，测试时可设为true
+        isScanning: true, //全局蓝牙连接状态，默认false，测试时可设为true
         deviceId: "",
         serviceId: "",
         notifyCharacteristicId: "",
