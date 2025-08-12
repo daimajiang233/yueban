@@ -270,7 +270,9 @@ Component({
                         reject(new Error('Scan timeout'));
                     }, 6000);
                     wx.onBluetoothDeviceFound((res) => {
-                        const targetDevice = res.devices.find(device => device.name === this.data.name);
+                        console.log(res.devices,"所有的设备All");
+                        
+                        const targetDevice = res.devices.find(device => device.name || device.localName === this.data.name);
                         if (targetDevice) {
                             console.log('找到目标设备:', targetDevice);
                             clearTimeout(timeoutTimer); // 清除超时
