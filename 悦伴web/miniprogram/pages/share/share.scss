@@ -84,6 +84,7 @@
 
 // 按钮样式
 .join-btn, .ceart-btn {
+  -webkit-tap-highlight-color: transparent; //解决点击出现蓝色背景
   padding: 28rpx 50rpx;
   border: none;
   border-radius: 24rpx;
