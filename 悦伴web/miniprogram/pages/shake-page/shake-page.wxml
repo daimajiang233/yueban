@@ -15,9 +15,9 @@
   </view>
 
   <!-- 震动图标 -->
-  <view class="icon-container">
-    <image src="/images/vibration-icon.png" class="vibration-icon"></image>
-  </view>
+  <!-- <view class="icon-container"> -->
+    <!-- <image src="/images/vibration-icon.png" class="vibration-icon"></image> -->
+  <!-- </view> -->
 
   <!-- 滑动条 -->
   <view class="slider-container">

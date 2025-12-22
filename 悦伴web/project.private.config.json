@@ -5,13 +5,13 @@
     "compileHotReLoad": true,
     "urlCheck": false
   },
-  "libVersion": "3.9.0",
+  "libVersion": "3.12.1",
   "condition": {
     "miniprogram": {
       "list": [
         {
           "name": "pages/share/share",
-          "pathName": "pages/index/index",
+          "pathName": "pages/shake-page/shake-page",
           "query": "",
           "launchMode": "default",
           "scene": null
