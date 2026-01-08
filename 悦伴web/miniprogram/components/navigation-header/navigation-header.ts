@@ -94,6 +94,8 @@ Component({
                     // 确保蓝牙适配器已初始化
                     if (!this.data.adapterState) {
                         await this.initBluetooth()
+                        // 增加一个小延迟，等待硬件层稳定
+                        await new Promise(resolve => setTimeout(resolve, 500));
                         // 如果未在扫描中，开始扫描
                         if (!this.data.isScanning) {
                             await this.startScan()
@@ -177,7 +179,7 @@ Component({
                                 userInfo.isScanning = false
                                 // 关闭适配器
                                 this.closeBluetooth();
-                                this.setData({isScanning: false, deviceId: '', serviceId: '', writeCharacteristicId: '',dapterState:false, status: '已断开设备连接' });
+                                this.setData({isScanning: false, deviceId: '', serviceId: '', writeCharacteristicId: '',adapterState:false, status: '已断开设备连接' });
 
                                 resolve(true);
                             },
@@ -244,7 +246,7 @@ Component({
         },
 
         // 扫描设备
-        startScan(){
+        async startScan(){
             if (!this.data.adapterState) {
                 console.error('蓝牙适配器未初始化');
                 this.setData({ status: '蓝牙适配器未初始化' });
@@ -255,29 +257,45 @@ Component({
                 this.setData({ status: '已在扫描中' });
                 return Promise.resolve();
             }
+            // 2. 强制停止之前的扫描并等待 500ms（非常重要！）
+            try {
+                await new Promise(resolve => {
+                    wx.stopBluetoothDevicesDiscovery({ 
+                        complete: () => setTimeout(resolve, 500) 
+                    });
+                });
+            } catch (e) {}
             // 先关闭监听再打开
             // this.stopScan()
             wx.offBluetoothDeviceFound();
             let timeoutTimer = null;
             return new Promise((resolve, reject) => {
+                
                 wx.startBluetoothDevicesDiscovery({
-                services: [], // 空数组表示扫描所有设备
+                services: ['0000AF30-0000-1000-8000-00805F9B34FB'], // 空数组表示扫描所有设备
                 allowDuplicatesKey: false,
-                success: (res) => {
+                success: (res) => {                    
                     timeoutTimer = setTimeout(() => {
                         wx.stopBluetoothDevicesDiscovery();
                         console.log('扫描超时结束');
                         reject(new Error('Scan timeout'));
-                    }, 6000);
+                    }, 10000);
+
                     wx.onBluetoothDeviceFound((res) => {
-                        console.log(res.devices,"所有的设备All");
+                        res.devices.forEach(device => {
+                            const name = device.name || device.localName || "未知设备";
+                            console.log(device.deviceId,device.advertisServiceUUIDs,"这是我需要的数据");
+                            console.log('当前发现设备:', name, 'RSSI:', device.RSSI);
+                        });
                         const targetDevice = res.devices.find(device => device.name === this.data.name || device.localName === this.data.name);
+                        // const targetDevice = res.devices.find(device => device.deviceId === 'DE:6E:24:90:2C:00');
+
                         if (targetDevice) {
                             console.log('找到目标设备:', targetDevice);
                             clearTimeout(timeoutTimer); // 清除超时
                             console.log("清除超时成功");
                             
-                            // wx.stopBluetoothDevicesDiscovery(); // 找到后停止扫描
+                            wx.stopBluetoothDevicesDiscovery(); // 找到后停止扫描
                             resolve(targetDevice);
                             // 这里连接设备...
                           }
@@ -326,7 +344,18 @@ Component({
                                 this.setData({ deviceId: targetDevice.deviceId, status: `找到设备: ${targetName}` });
                                 userInfo.deviceId = targetDevice.deviceId;
                                 console.log(`找到目标设备: ${targetName}, ID: ${this.data.deviceId}`);
-                                resolve(targetDevice.deviceId);
+                                // 拿到deviceId理解关闭搜索
+                                // 1. 立即停止搜索（非常重要）
+                                wx.stopBluetoothDevicesDiscovery({
+                                    success: () => {
+                                    console.log('搜索已停止，准备进入连接缓冲期');
+                                    
+                                    // 2. 给予安卓系统 500ms 的物理缓冲时间
+                                    // setTimeout(() => {
+                                        resolve(targetDevice.deviceId);
+                                    // }, 500);
+                                    }
+                                });
                             } else {
                                 console.log(`未找到目标设备 ${targetName}`);
                                 this.setData({ status: `未找到设备 ${targetName}` });
@@ -346,7 +375,7 @@ Component({
         connectToDevice(deviceId:string) {
             const app = getApp();
             const userInfo = app.getGlobalUserInfo();
-            const id = deviceId || this.data.deviceId;
+            const id = userInfo.deviceId || this.data.deviceId;
                 if (!id && !this.data.deviceId) {
                     console.error('未提供设备ID');
                     this.setData({ status: '无设备ID' });
@@ -506,6 +535,34 @@ Component({
                   console.log('连接已断开或缺少必要信息，停止定时器');
                   return;
               }
+               // 主动检查已连接的蓝牙设备
+                // wx.onBLEConnectionStateChange((res) => {
+                //     console.log('连接状态改变', res.deviceId, res.connected);
+                    
+                //     if (res.deviceId === this.data.deviceId) {
+                //         if (res.connected) {
+                //             // 真正连上了（包括重新连上）
+                //             this.setData({ isScanning: true, status: '连接正常' });
+                //         } else {
+                //             // 真正断开了（系统断开、设备掉电、超出距离等）
+                //             this.setData({
+                //                 isScanning: false,
+                //                 deviceId: '',
+                //                 serviceId: '',
+                //                 writeCharacteristicId: '',
+                //                 status: '连接已断开'
+                //             });
+                //             console.log('连接已断开onBLEConnectionStateChange');
+                            
+                //             clearInterval(timerId);
+                //             userInfo.isScanning = false;
+                //             this.stopBluetoothProcess();
+                //             this.closeBluetooth();
+                //             // 可选：尝试自动重连
+                //             // this.startBluetoothProcess();
+                //         }
+                //     }
+                // });
 
               // 主动检查已连接的蓝牙设备
               wx.getConnectedBluetoothDevices({
