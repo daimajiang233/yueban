@@ -355,6 +355,7 @@ Page({
               try {
                   // await new Promise(resolve => setTimeout(resolve, 2000));
                   this.setData({ connected: false }); // 更新状态（如果页面还在）
+                  this.sendData("0xFD");
                   wx.closeSocket();
                   console.log('关闭连接成功:');
                   
