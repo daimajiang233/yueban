@@ -1,26 +1,31 @@
+﻿// 全局数据类型定义
+
 interface UserInfo {
-    name: string;
-    status: boolean;
-    isScanning: boolean;
-    deviceId?: string;
-    serviceId?: string;
-    writeCharacteristicId?: string;
-    notifyCharacteristicId?: string;
-    rssi?: number;
-    advertisData?: string;
-    foundTime?: string;
-    modelInfo:object,
-    // connected:boolean
+  name: string;
+  status: boolean;
+  isScanning: boolean;
+  isConnected?: boolean;
+  deviceId?: string;
+  serviceId?: string;
+  writeCharacteristicId?: string;
+  notifyCharacteristicId?: string;
+  rssi?: number;
+  advertisData?: string;
+  foundTime?: string;
+  hasAutoConnected?: boolean;
+  bleWriteSeq: number;
+  /** 外部页面（非我的模式）写入蓝牙时置 true，我的模式 onShow 消费 */
+  externalBleWrite: boolean;
+  modelInfo: {
+    startPause: boolean;
+    buttons: boolean[];
+  };
 }
 
-// 定义 IAppOption 接口，明确 globalData 的结构
 interface IAppOption {
-    globalData: {
-        userInfo: UserInfo;
-        // 可以添加其他全局数据字段
-        // someOtherData: number;
-    };
+  globalData: {
+    userInfo: UserInfo;
+  };
+  getGlobalUserInfo(): UserInfo;
+  setGlobalUserInfo(userInfo: Partial<UserInfo>): void;
 }
-
-// 扩展 wx.App 类型，让 TypeScript 能正确识别 App 实例的类型
-// declare const getApp: <T = IAppOption>() => T;    已经声明了

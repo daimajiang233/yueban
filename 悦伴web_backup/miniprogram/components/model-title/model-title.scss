@@ -1,0 +1,17 @@
+.model-title{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 600rpx; /* 宽度根据图片比例估算，可调整 */
+    height: 100rpx; /* 高度根据图片比例估算，可调整 */
+    // padding-left: 20rpx;
+    // margin-bottom: 20rpx;
+    padding-left: 10rpx;
+  
+    /* 文本样式 */
+    text {
+      color: #000; /* 黑色文本 */
+      font-size: 40rpx; /* 字体大小，微信小程序常用 rpx */
+      font-weight: bold;
+    }
+}

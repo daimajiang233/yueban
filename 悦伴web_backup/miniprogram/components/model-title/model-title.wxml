@@ -1,0 +1,6 @@
+<!--components/model-titel/model-titel.wxml-->
+<view>
+    <view class="model-title">
+        <text>{{remoteModel?"远程控制模式":"本地控制模式"}}</text>
+    </view>
+</view>
