@@ -22,10 +22,10 @@
     <navigation-btnList zhTitle="智能加温" enTitle="HEATING" bluetoothData="F4" iconUrl="http://lovelilin.com/yueban/assets/%E8%B5%84%E6%BA%90%20149.png"></navigation-btnList>
   </view> -->
   <view>
-    <navigation-btnList zhTitle="使用教程" enTitle="INSTRUTIONS" bluetoothData="F3" pageSrc='instrutions/instrutions' iconUrl="https://wss.nick9995403432.com.cn/assets/%E8%B5%84%E6%BA%90%20148.png"></navigation-btnList>
+    <navigation-btnList zhTitle="使用教程" enTitle="INSTRUTIONS" bluetoothData="F3" pageSrc='instrutions/instrutions' requireBle="{{false}}" iconUrl="https://wss.nick9995403432.com.cn/assets/%E8%B5%84%E6%BA%90%20148.png"></navigation-btnList>
   </view>
   <view>
-    <navigation-btnList zhTitle="分享" enTitle="SHARE" bluetoothData="0xEEE" pageSrc="share/share" iconUrl="https://wss.nick9995403432.com.cn/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
+    <navigation-btnList zhTitle="分享" enTitle="SHARE" bluetoothData="0xEEE" pageSrc="share/share" requireBle="{{false}}" iconUrl="https://wss.nick9995403432.com.cn/assets/%E8%B5%84%E6%BA%90%20151.png"></navigation-btnList>
   </view>
   </view>
 </view>
