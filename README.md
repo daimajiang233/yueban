@@ -116,7 +116,7 @@ npm install
 
 ## 🧪 开发
 
-详细的架构设计、重连策略、连接门控规则见 [DEVELOPMENT.md](./DEVELOPMENT.md)。
+详细的架构设计、重连策略、连接门控规则见 [DEVELOPMENT.md](./悦伴web/DEVELOPMENT.md)。
 
 ## 📄 License
 
