@@ -141,8 +141,26 @@ class BLEService {
       return true;
     }
     if (this._connecting && this._connectPromise) {
-      console.log("[BLE] connect: 正在连接中，等待现有连接完成");
-      return await this._connectPromise;
+      // 检测 Promise 是否已 settled：如果 _connecting 已被其他流程重置为 false，
+      // 说明 Promise 已完成但未被正常清理（重连路径不会清空 _connectPromise），
+      // 此时直接清理并走新的连接流程，避免永远卡在 await 已settled的旧 Promise
+      if (!this._connecting) {
+        console.log("[BLE] connect: 检测到残留 _connectPromise（已settled），清理后重新连接");
+        this._connectPromise = null;
+        // 继续往下走新的连接流程
+      } else {
+        console.log("[BLE] connect: 连接进行中，等待当前连接结果");
+        if (this._isHomePage) wx.showLoading({ title: "连接中...", mask: true });
+        const result = await this._connectPromise;
+        // await 返回后清理（防止重连路径没有清理）
+        this._connectPromise = null;
+        if (this._isHomePage) {
+          wx.hideLoading();
+          if (result) wx.showToast({ title: "连接成功", icon: "success", duration: 1500 });
+          else wx.showToast({ title: "连接失败", icon: "none", duration: 1500 });
+        }
+        return result;
+      }
     }
     if (this._connecting) {
       console.log("[BLE] connect: 正在连接中，跳过重复调用");
@@ -161,12 +179,10 @@ class BLEService {
       this._connected = false;
     }
 
+    if (this._isHomePage) wx.showLoading({ title: "连接中...", mask: true });
     this._connecting = true;
     this._connectPromise = (async (): Promise<boolean> => {
       // 仅在首页可见时显示 loading
-      if (this._isHomePage) {
-        wx.showLoading({ title: "连接蓝牙...", mask: true });
-      }
       console.log("[BLE] 步骤1: 开始连接流程");
 
       try {
@@ -198,10 +214,6 @@ class BLEService {
         this._lastConnectionTime = Date.now();
         this._reconnectAttempts = 0;
         this._connecting = false;
-        if (this._isHomePage) {
-          wx.hideLoading();
-          wx.showToast({ title: "连接成功", icon: "success", duration: 1500 });
-        }
         console.log("[BLE] 步骤10: 连接完成, writeChar =", this._writeCharId, "notifyChar =", this._notifyCharId);
         this._setStatus("连接成功");
         this._startHeartbeat();
@@ -211,10 +223,6 @@ class BLEService {
         this._connected = false;
         this._lastConnected = false;
         this._connecting = false;
-        if (this._isHomePage) {
-          wx.hideLoading();
-          wx.showToast({ title: "连接失败", icon: "none", duration: 1500 });
-        }
         this._setStatus("连接失败");
         this._closeAdapter().catch(() => {});
         return false;
@@ -223,6 +231,11 @@ class BLEService {
 
     const result = await this._connectPromise;
     this._connectPromise = null;
+    if (this._isHomePage) {
+      wx.hideLoading();
+      if (result) wx.showToast({ title: "连接成功", icon: "success", duration: 1500 });
+      else wx.showToast({ title: "连接失败", icon: "none", duration: 1500 });
+    }
     return result;
   }
 
@@ -240,6 +253,8 @@ class BLEService {
     this._stopHeartbeat();
     this._reconnecting = false;
     this._reconnectAttempts = 0;
+    this._connecting = false;
+    this._connectPromise = null;
     if (!this._deviceId) {
       this._reset();
       this._setStatus("已断开连接");
@@ -422,15 +437,22 @@ class BLEService {
     if (this._connecting && this._connectPromise) {
       console.log("[BLE] 重连: connect 已在执行，等待完成");
       this._reconnecting = true;
-      const connectResult = await this._connectPromise;
-      this._reconnecting = false;
-      if (connectResult) {
-        // connect 成功了，无需重连
-        return;
+      try {
+        const connectResult = await this._connectPromise;
+        this._connectPromise = null;  // 确保清理，防止泄漏
+        this._reconnecting = false;
+        if (connectResult) {
+          // connect 成功了，无需重连
+          return;
+        }
+        // connect 失败了，继续执行重连逻辑
+        console.log("[BLE] 重连: connect 失败，继续尝试重连");
+        // 注意：不 return，接续往下执行重连流程
+      } catch (e) {
+        this._connectPromise = null;  // 异常时也要清理
+        this._reconnecting = false;
+        console.log("[BLE] 重连: connect 异常，继续尝试重连", e);
       }
-      // connect 失败了，继续执行重连逻辑
-      console.log("[BLE] 重连: connect 失败，继续尝试重连");
-      // 注意：不 return，接续往下执行重连流程
     }
 
     // 再次确认：如果此时已经 connected（用户 connect() 在上面的检查窗口之后恢复了连接），
@@ -487,6 +509,13 @@ class BLEService {
       if (!connected) {
         console.log("[BLE] 重连: 开始扫描");
         await this._stopDiscovery().catch(() => {});
+        // 直连超时可能破坏适配器内部状态，扫描前确认适配器可用
+        if (!this._adapterReady) {
+          console.log("[BLE] 重连: 适配器不可用，重新初始化");
+          await this._closeAdapter().catch(() => {});
+          await new Promise(r => setTimeout(r, 300));
+          await this._initAdapter();
+        }
         await this._startDiscovery();
         const deviceId = await this._findDevice();
         this._deviceId = deviceId;
@@ -515,6 +544,10 @@ class BLEService {
       this._connected = false;
       this._lastConnected = false;
       this._reconnecting = false;
+      // 【关键修复】重连失败后必须清理 _connectPromise 和 _connecting，
+      // 否则后续 connect() 会卡在 await 一个已settled但未清空的旧 Promise
+      this._connecting = false;
+      this._connectPromise = null;
       if (this._isHomePage) {
         wx.hideLoading();
       }
