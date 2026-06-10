@@ -1,7 +1,8 @@
-﻿/**
+/**
  * 首页
- * 首次进入时自动连接蓝牙一次。
- * 蓝牙断开/重连时归位我的模式按钮（仅当首页可见时）。
+ * 首次进入时自动尝试连接一次。
+ * 蓝牙断开/重连时归位我的模式按钮（仅首页可见时）。
+ * 每次 onShow 时若未连接则触发 connect（自动复用进行中的连接）。
  */
 import bleService from "../../utils/ble-service";
 
@@ -10,7 +11,7 @@ Page({
 
   onLoad() {
     (this as any)._unsubBle = bleService.onStatusChange((status) => {
-      // 仅当首页可见时才归位按钮
+      // 仅在首页可见时才归位按钮
       const pages = getCurrentPages();
       const current = pages[pages.length - 1];
       if (!current || current.route !== "pages/index/index") return;
@@ -31,18 +32,15 @@ Page({
     const app = getApp<IAppOption>();
     if (!app.globalData.userInfo.hasAutoConnected) {
       app.globalData.userInfo.hasAutoConnected = true;
-      if (!bleService.isConnected) {
-        this._tryAutoConnect();
-      }
+    }
+    // 每次回到首页，若蓝牙未连接则触发 connect
+    // connect() 内部：已连接直接返回 true；正在连接则复用 promise + 显示 loading
+    if (!bleService.isConnected) {
+      bleService.connect();
     }
   },
 
   onUnload() {
     if ((this as any)._unsubBle) (this as any)._unsubBle();
-  },
-
-  async _tryAutoConnect() {
-    // loading 由 bleService 内部处理（首页自动显示）
-    await bleService.connect();
   },
 });
